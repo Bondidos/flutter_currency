@@ -15,7 +15,7 @@ class HomeLogic extends GetxController with StateMixin<HomeState> {
     fetchRates();
     super.onInit();
   }
-//todo make reactive
+
   Future<void> fetchRates() async {
     change(null, status: RxStatus.loading());
     final RatesOnDate data;

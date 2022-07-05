@@ -13,15 +13,10 @@ class CurrencySettingsImpl implements CurrencySettings {
   });
 
   @override
-  void createSettings(List<Rate> rates) =>
+  Future<void> createSettings(List<Rate> rates) =>
       currencySettings.write(currencySettingsKey, rates.createSettings());
 
   @override
-  List<CurrencySettings> fetchSettings() =>
-      currencySettings.read(currencySettingsKey) ?? [];
-
-  @override
-  void updateSettings(List<CurrencySettings> settings) {
-    // TODO: implement updateSettings
-  }
+  Map<String, dynamic> fetchSettings() =>
+      currencySettings.read(currencySettingsKey) ?? {};
 }
