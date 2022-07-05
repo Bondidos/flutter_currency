@@ -1,4 +1,4 @@
-import 'package:flutter_currency/data/sources/local/date_storage/provider.dart';
+import 'package:flutter_currency/data/sources/local/settings/date_settings.dart';
 import 'package:flutter_currency/domain/entities/rate.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +8,7 @@ class HomeState {
   late final bool isTomorrowRatesExists;
   late final String currentDate;
   late final String alternativeDate;
-  final DateStorage storage = Get.find<DataStorageImpl>();
+  final DateSettings storage = Get.find();
 
   HomeState({required this.rates}) {
     isTomorrowRatesExists = storage.isTomorrowRatesExists;

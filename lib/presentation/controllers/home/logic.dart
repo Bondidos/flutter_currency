@@ -1,4 +1,4 @@
-import 'package:flutter_currency/data/sources/remote/api_provider.dart';
+import 'package:flutter_currency/data/remote/source/exceptions.dart';
 import 'package:flutter_currency/domain/entities/rate.dart';
 import 'package:flutter_currency/domain/usecases/fetch_currency_rates_use_case.dart';
 import 'package:flutter_currency/presentation/controllers/home/state.dart';
