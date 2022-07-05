@@ -17,17 +17,22 @@ class DependencyCreator {
     initServices();
   }
 }
+
 initSources() async {
   Get.lazyPut(() => APIProvider(), fenix: true);
   await GetStorage.init('Settings');
   Get.lazyPut<GetStorage>(() => GetStorage('Settings'));
 }
 
-createSources(){
+createSources() {
   Get.lazyPut<CurrencyRemoteSource>(
-          () => CurrencyRemoteSourceImpl(apiProvider: Get.find()));
+      () => CurrencyRemoteSourceImpl(apiProvider: Get.find()));
 }
+
 initServices() {
   Get.lazyPut<DateSettings>(() => DateSettingsImpl(storage: Get.find()));
-  Get.lazyPut<CurrencyRepository>(() => CurrencyRepoImpl(currencyRemoteSource: Get.find()));
+  Get.lazyPut<CurrencyRepository>(() => CurrencyRepoImpl(
+        currencyRemoteSource: Get.find(),
+        dateSettings: Get.find(),
+      ));
 }

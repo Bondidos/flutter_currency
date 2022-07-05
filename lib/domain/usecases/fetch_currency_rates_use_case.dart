@@ -1,4 +1,4 @@
-import 'package:flutter_currency/domain/entities/rate.dart';
+import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 import 'package:flutter_currency/domain/repositories/currency_repository.dart';
 
 class FetchCurrencyRatesUseCase {
@@ -8,5 +8,5 @@ class FetchCurrencyRatesUseCase {
     required this.repository,
   });
 
-  Future<List<Rate>> call() => repository.fetchRates();
+  Future<RatesOnDate> call() => repository.fetchRates();
 }

@@ -14,6 +14,12 @@ class HomePage extends GetView<HomeLogic> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Currencies"),
+        actions: [
+          IconButton(
+              onPressed: controller.navigateSettings,
+              icon: const Icon(Icons.settings),
+          )
+        ],
       ),
       body: controller.obx(
         (state) {

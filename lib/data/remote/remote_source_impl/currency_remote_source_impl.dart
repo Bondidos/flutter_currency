@@ -9,12 +9,14 @@ import 'package:flutter_currency/domain/entities/rate.dart';
 class CurrencyRemoteSourceImpl implements CurrencyRemoteSource {
   final APIProvider apiProvider;
 
-  CurrencyRemoteSourceImpl({required this.apiProvider});
+  CurrencyRemoteSourceImpl({
+    required this.apiProvider
+  });
 
   @override
   Future<List<Rate>> fetchRates() async {
     final List<dynamic> todayResponse =
-    await apiProvider.request(CurrencyRatesApi.today());
+        await apiProvider.request(CurrencyRatesApi.today());
     final List<dynamic> alternativeResponse = await _fetchAlternativeRates();
     return _createResultList(
       alternativeRates: alternativeResponse.toRateApiList(),
