@@ -18,7 +18,6 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
   @override
   Future<RatesOnDate> fetchRates() async {
     final List<Rate> rates = await currencyRemoteSource.fetchRates();
-
     return RatesOnDate(
       rates: rates,
       currentDate: dateSettings.currentDate.asString(),

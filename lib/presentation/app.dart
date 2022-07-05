@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_currency/presentation/controllers/home/binding.dart';
-import 'package:flutter_currency/presentation/pages/home_page/view.dart';
+import 'package:flutter_currency/presentation/pages/home/view.dart';
 import 'package:get/get.dart';
 
 class App extends StatelessWidget {

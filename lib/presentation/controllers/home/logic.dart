@@ -2,6 +2,7 @@ import 'package:flutter_currency/data/remote/source/exceptions.dart';
 import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 import 'package:flutter_currency/domain/usecases/fetch_currency_rates_use_case.dart';
 import 'package:flutter_currency/presentation/controllers/home/state.dart';
+import 'package:flutter_currency/presentation/pages/settings/view.dart';
 import 'package:get/get.dart';
 
 class HomeLogic extends GetxController with StateMixin<HomeState> {
@@ -27,5 +28,5 @@ class HomeLogic extends GetxController with StateMixin<HomeState> {
     super.onInit();
   }
 
-  navigateSettings() => Get.toNamed('page');
+  navigateSettings() => Get.toNamed(SettingsPage.id);
 }

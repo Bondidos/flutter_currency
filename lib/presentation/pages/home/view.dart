@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_currency/presentation/pages/home_page/widgets/date_panel.dart';
-import 'package:flutter_currency/presentation/pages/home_page/widgets/rate_item.dart';
+import 'package:flutter_currency/presentation/pages/home/widgets/date_panel.dart';
+import 'package:flutter_currency/presentation/pages/home/widgets/rate_item.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_currency/presentation/controllers/home/logic.dart';
