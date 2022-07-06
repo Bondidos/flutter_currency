@@ -1,5 +1,6 @@
 import 'package:flutter_currency/data/local/settings/extensions/date_settings_ext.dart';
 import 'package:flutter_currency/data/sources/local/cache/in_memory_cache.dart';
+import 'package:flutter_currency/data/sources/local/database/rates_dao.dart';
 import 'package:flutter_currency/data/sources/local/settings/currency_settings.dart';
 import 'package:flutter_currency/data/sources/local/settings/date_settings.dart';
 import 'package:flutter_currency/data/sources/remote/currency_remote_source.dart';
@@ -13,12 +14,14 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
   final DateSettings dateSettings;
   final CurrencySettings currencySettings;
   final InMemoryCache inMemoryCache;
+  final RatesDao ratesDatabase;
 
   CurrencyRepoImpl({
     required this.currencyRemoteSource,
     required this.dateSettings,
     required this.currencySettings,
     required this.inMemoryCache,
+    required this.ratesDatabase,
   });
 
   @override
