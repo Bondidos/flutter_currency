@@ -8,4 +8,6 @@ abstract class DateSettings {
   DateTime get alternativeDate;
 
   bool get isTomorrowRatesExists;
+
+  bool get isCurrentDateActual;
 }

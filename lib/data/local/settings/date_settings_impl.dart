@@ -1,11 +1,10 @@
 import 'package:flutter_currency/data/sources/local/settings/date_settings.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 const alternativeKey = 'alternative';
 const currentKey = 'current';
 
-class DateSettingsImpl extends GetxService implements DateSettings {
+class DateSettingsImpl implements DateSettings {
   final GetStorage storage;
 
   DateSettingsImpl({required this.storage});
@@ -28,4 +27,12 @@ class DateSettingsImpl extends GetxService implements DateSettings {
 
   @override
   bool get isTomorrowRatesExists => currentDate.isBefore(alternativeDate);
+
+  @override
+  bool get isCurrentDateActual {
+    DateTime lastRequestDate = currentDate;
+    DateTime dateNow = DateTime.now();
+    return dateNow.isAfter(lastRequestDate);
+  }
+
 }

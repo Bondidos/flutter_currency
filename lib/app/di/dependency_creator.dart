@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_currency/data/local/cache/in_memory_cache_impl.dart';
 import 'package:flutter_currency/data/local/settings/currency_settings_impl.dart';
@@ -15,39 +13,58 @@ import 'package:flutter_currency/domain/repositories/currency_repository.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+const dateSettingsTag = 'DateSettings';
+const currencySettingsTag = 'CurrencySettings';
+const inMemoryCache = 'InMemoryCache';
+
 class DependencyCreator {
   static init() async {
     WidgetsFlutterBinding.ensureInitialized();
     await initSources();
     createSources();
-    initServices();
+    putImplementations();
+    putServices();
   }
 }
 
 initSources() async {
-  Get.lazyPut(() => APIProvider(), fenix: true);
-  await GetStorage.init('Settings');
-  Get.lazyPut<GetStorage>(() => GetStorage('Settings'),
-      fenix: true);
+  await GetStorage.init(dateSettingsTag);
+  await GetStorage.init(currencySettingsTag);
+  await GetStorage.init(inMemoryCache);
 }
 
 createSources() {
-  Get.lazyPut<CurrencyRemoteSource>(
-      () => CurrencyRemoteSourceImpl(apiProvider: Get.find()));
+  Get.lazyPut(() => APIProvider());
+  Get.lazyPut<GetStorage>(() => GetStorage(dateSettingsTag),
+      tag: dateSettingsTag);
+  Get.lazyPut<GetStorage>(() => GetStorage(currencySettingsTag),
+      tag: currencySettingsTag);
+  Get.lazyPut<GetStorage>(() => GetStorage(inMemoryCache), tag: inMemoryCache);
 }
 
-initServices() {
-  Get.lazyPut<DateSettings>(() => DateSettingsImpl(storage: Get.find()));
-  Get.lazyPut<InMemoryCache>(() => InMemoryCacheImpl(cache: Get.find()));
-  Get.lazyPut<CurrencySettings>(
-      () => CurrencySettingsImpl(currencySettings: Get.find()));
-
-  Get.lazyPut<CurrencyRepository>(() => CurrencyRepoImpl(
-        currencyRemoteSource: Get.find(),
+putImplementations() {
+  Get.lazyPut<CurrencyRemoteSource>(() => CurrencyRemoteSourceImpl(
+        apiProvider: Get.find(),
+      ));
+  Get.lazyPut<DateSettings>(() => DateSettingsImpl(
+        storage: Get.find(tag: dateSettingsTag),
+      ));
+  Get.lazyPut<InMemoryCache>(() => InMemoryCacheImpl(
+        cache: Get.find(tag: inMemoryCache),
         dateSettings: Get.find(),
-        inMemoryCache: Get.find(),
-        currencySettings: Get.find(),
+      ));
+  Get.lazyPut<CurrencySettings>(() => CurrencySettingsImpl(
+        currencySettings: Get.find(tag: currencySettingsTag),
       ));
 }
 
-
+putServices() {
+  Get.lazyPut<CurrencyRepository>(
+    () => CurrencyRepoImpl(
+      currencyRemoteSource: Get.find(),
+      dateSettings: Get.find(),
+      inMemoryCache: Get.find(),
+      currencySettings: Get.find(),
+    ),
+  );
+}

@@ -6,16 +6,21 @@ import 'package:flutter_currency/presentation/pages/settings/view.dart';
 import 'package:get/get.dart';
 
 class HomeLogic extends GetxController with StateMixin<HomeState> {
-  final FetchCurrencyRatesUseCase fetchRates;
+  final FetchCurrencyRatesUseCase fetchRatesUseCase;
 
-  HomeLogic({required this.fetchRates});
+  HomeLogic({required this.fetchRatesUseCase});
 
   @override
   void onInit() async {
+    fetchRates();
+    super.onInit();
+  }
+
+  Future<void> fetchRates() async {
     change(null, status: RxStatus.loading());
     final RatesOnDate data;
     try {
-      data = await fetchRates();
+      data = await fetchRatesUseCase();
       change(
         HomeState.fromRatesOnDate(data),
         status: RxStatus.success(),
@@ -25,7 +30,6 @@ class HomeLogic extends GetxController with StateMixin<HomeState> {
     } catch (e) {
       change(null, status: RxStatus.error(e.toString()));
     }
-    super.onInit();
   }
 
   navigateSettings() => Get.toNamed(SettingsPage.id);

@@ -7,6 +7,6 @@ class HomeBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => FetchCurrencyRatesUseCase(repository: Get.find()));
-    Get.lazyPut(() => HomeLogic(fetchRates: Get.find()));
+    Get.lazyPut(() => HomeLogic(fetchRatesUseCase: Get.find()));
   }
 }

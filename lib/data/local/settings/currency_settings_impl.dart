@@ -1,15 +1,11 @@
+import 'package:flutter_currency/data/local/settings/extensions/currency_settings_ext.dart';
 import 'package:flutter_currency/data/sources/local/settings/currency_settings.dart';
-import 'package:get/get.dart';
+import 'package:flutter_currency/domain/entities/rate.dart';
 import 'package:get_storage/get_storage.dart';
 
 const currencySettingsKey = 'currencySettings';
-const Map<String, bool> initialSettings = {
-  '431': true,
-  '451': true,
-  '456': true,
-};
 
-class CurrencySettingsImpl extends GetxService implements CurrencySettings {
+class CurrencySettingsImpl implements CurrencySettings {
   final GetStorage currencySettings;
 
   CurrencySettingsImpl({
@@ -17,15 +13,10 @@ class CurrencySettingsImpl extends GetxService implements CurrencySettings {
   });
 
   @override
-  Future<void> createSettings(Map<String, bool> settings) async{
-     try{
-       await currencySettings.write(currencySettingsKey, settings);
-       return;
-     }catch(e){
-       print(e.toString());
-     }
-  }
+  Future<void> createSettings(List<Rate> rates) =>
+      currencySettings.write(currencySettingsKey, rates.createSettings());
 
   @override
-  Map<String, dynamic> fetchSettings() => currencySettings.read(currencySettingsKey);
+  Map<String, dynamic> fetchSettings() =>
+      currencySettings.read(currencySettingsKey) ?? {};
 }

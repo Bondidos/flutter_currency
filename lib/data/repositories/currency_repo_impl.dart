@@ -8,8 +8,6 @@ import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 import 'package:flutter_currency/domain/repositories/currency_repository.dart';
 import 'package:get/get.dart';
 
-const initialSettingsLength = 3;
-
 class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
   final CurrencyRemoteSource currencyRemoteSource;
   final DateSettings dateSettings;
@@ -23,13 +21,10 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
     required this.inMemoryCache,
   });
 
-  //todo refactor this class
-  //todo read / write settings
   @override
   Future<RatesOnDate> fetchRates() async {
-    final List<Rate> rates = await currencyRemoteSource.fetchRates();
-    // inMemoryCache.cacheRates(rates);
-    final List<Rate> ratesFiltered = _syncWithSettings(rates);
+    final List<Rate> rates = await _fetchRatesFromCacheOrRemote();
+    final List<Rate> ratesFiltered = await _syncWithSettings(rates);
     return RatesOnDate(
       rates: ratesFiltered,
       currentDate: dateSettings.currentDate.asString(),
@@ -38,21 +33,26 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
     );
   }
 
-  List<Rate> _syncWithSettings(List<Rate> rates) {
+  Future<List<Rate>> _fetchRatesFromCacheOrRemote() async {
+    final List<Rate> cachedRates = inMemoryCache.getCachedRates();
+    if (cachedRates.isEmpty) return _fetchRatesThenCache();
+    return cachedRates;
+  }
+
+  Future<List<Rate>> _fetchRatesThenCache() async {
+    final List<Rate> ratesApi = await currencyRemoteSource.fetchRates();
+    inMemoryCache.cacheRates(ratesApi);
+    return ratesApi;
+  }
+
+  Future<List<Rate>> _syncWithSettings(List<Rate> rates) async {
     Map<String, dynamic> settings = currencySettings.fetchSettings();
-    if (settings.length == initialSettingsLength) {
-      _createFullSettings(rates.createSettings());
+    if (settings.isEmpty && settings.length != rates.length) {
+      await currencySettings.createSettings(rates);
+      settings = currencySettings.fetchSettings();
     }
     return rates
         .where((element) => settings[element.curId.toString()] == true)
         .toList();
   }
-
-  void _createFullSettings(Map<String, bool> settings) =>
-      currencySettings.createSettings(settings);
-}
-
-extension CreateSettings on List<Rate> {
-  Map<String, bool> createSettings() =>
-      {for (var item in this) item.curId.toString(): false};
 }

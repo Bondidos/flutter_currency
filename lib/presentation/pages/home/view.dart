@@ -21,34 +21,37 @@ class HomePage extends GetView<HomeLogic> {
           )
         ],
       ),
-      body: controller.obx(
-        (state) {
-          if (state == null) return const SizedBox.shrink();
-          return Column(
-            children: [
-              DatePanel(
-                currentDate: state.currentDate,
-                alternativeDate: state.alternativeDate,
-                isTomorrowRatesExists: state.isTomorrowRatesExists,
-              ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: state.rates.length,
-                  itemBuilder: (context, index) {
-                    return RateItem(
-                      rate: state.rates[index],
-                      isTomorrowRatesExist: state.isTomorrowRatesExists,
-                    );
-                  },
+      body: RefreshIndicator(
+        onRefresh: controller.fetchRates,
+        child: controller.obx(
+          (state) {
+            if (state == null) return const SizedBox.shrink();
+            return Column(
+              children: [
+                DatePanel(
+                  currentDate: state.currentDate,
+                  alternativeDate: state.alternativeDate,
+                  isTomorrowRatesExists: state.isTomorrowRatesExists,
                 ),
-              ),
-            ],
-          );
-        },
-        onError: (message) => GetSnackBar(
-          message: message,
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 1),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: state.rates.length,
+                    itemBuilder: (context, index) {
+                      return RateItem(
+                        rate: state.rates[index],
+                        isTomorrowRatesExist: state.isTomorrowRatesExists,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+          onError: (message) => GetSnackBar(
+            message: message,
+            snackPosition: SnackPosition.BOTTOM,
+            duration: const Duration(seconds: 1),
+          ),
         ),
       ),
     );
