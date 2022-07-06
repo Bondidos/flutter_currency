@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bondidos.flutter_currency">
+
    <application
         android:label="flutter_currency"
         android:name="${applicationName}"

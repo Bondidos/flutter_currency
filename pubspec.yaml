@@ -12,7 +12,7 @@ dependencies:
 
   cupertino_icons: ^1.0.2
   get: 4.6.5
-  get_storage: ^2.0.3
+  get_storage: 2.0.3
   json_serializable: 6.2.0
   json_annotation: 4.5.0
   intl: 0.17.0
