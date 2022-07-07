@@ -4,7 +4,7 @@ import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-const ratesOnDateKey = 'rateListKey';
+const ratesOnDateKey = 'ratesOnDateKey';
 
 class RatesDaoImpl implements RatesDao {
   final Box<RatesOnDate> ratesBox;

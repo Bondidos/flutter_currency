@@ -3,6 +3,7 @@ import 'package:get_storage/get_storage.dart';
 
 const alternativeKey = 'alternative';
 const currentKey = 'current';
+const noCurrentDate = 0;
 
 class DateSettingsImpl implements DateSettings {
   final GetStorage storage;
@@ -14,8 +15,8 @@ class DateSettingsImpl implements DateSettings {
       DateTime.fromMillisecondsSinceEpoch(storage.read(alternativeKey));
 
   @override
-  DateTime get currentDate =>
-      DateTime.fromMillisecondsSinceEpoch(storage.read(currentKey));
+  DateTime get currentDate => DateTime.fromMillisecondsSinceEpoch(
+      storage.read(currentKey) ?? noCurrentDate);
 
   @override
   void setAlternativeDate(DateTime date) =>
@@ -31,8 +32,8 @@ class DateSettingsImpl implements DateSettings {
   @override
   bool get isCurrentDateActual {
     DateTime lastRequestDate = currentDate;
+    if (lastRequestDate.millisecondsSinceEpoch == noCurrentDate) return false;
     DateTime dateNow = DateTime.now();
     return dateNow.isAfter(lastRequestDate);
   }
-
 }

@@ -39,10 +39,11 @@ class CurrencyRemoteSourceImpl implements CurrencyRemoteSource {
     required List<RateApi> todayRates,
     required List<RateApi> alternativeRates,
   }) {
+    final core = (todayRates.isEmpty) ? alternativeRates : todayRates;
     final rates = List<Rate>.generate(
-      todayRates.length,
+      core.length,
       (index) => RateModel.fromActualAndAlternative(
-        current: todayRates[index],
+        current: core[index],
         alternative: alternativeRates[index],
       ),
     );
