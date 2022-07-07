@@ -1,6 +1,6 @@
-import 'package:flutter_currency/domain/entities/rate.dart';
+import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 
-abstract class RatesDao {
-  void saveRates(List<Rate> rates);
-  List<Rate> getRates();
+abstract class RatesDao{
+  void saveRatesOnDate(RatesOnDate rates);
+  RatesOnDate? getRates();
 }

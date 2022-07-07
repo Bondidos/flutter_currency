@@ -5,7 +5,7 @@ part 'rate_settings.g.dart';
 @HiveType(typeId: 3)
 class RateSettings {
   @HiveField(0)
-  final String id;
+  final int id;
   @HiveField(1)
   final String curAbbr;
   @HiveField(2)

@@ -20,7 +20,7 @@ class RateSettingsAdapter extends TypeAdapter<RateSettings> {
       curAbbr: fields[1] as String,
       curScale: fields[2] as int,
       curName: fields[3] as String,
-      id: fields[0] as String,
+      id: fields[0] as int,
       listPos: fields[4] as int,
       isShow: fields[5] as bool,
     );

@@ -1,39 +1,38 @@
 import 'package:flutter_currency/data/models/rate_api.dart';
 import 'package:flutter_currency/data/models/rate_model.dart';
 import 'package:flutter_currency/data/remote/remote_source_impl/extensions/currency_repo_ext.dart';
-import 'package:flutter_currency/data/remote/source/api_provider.dart';
-import 'package:flutter_currency/data/remote/source/apis/currency_api.dart';
 import 'package:flutter_currency/data/sources/local/settings/date_settings.dart';
 import 'package:flutter_currency/data/sources/remote/currency_remote_source.dart';
+import 'package:flutter_currency/data/sources/remote/services/currency_service.dart';
 import 'package:flutter_currency/domain/entities/rate.dart';
 import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 
 class CurrencyRemoteSourceImpl implements CurrencyRemoteSource {
   final DateSettings dateSettings;
+  final CurrencyService currencyService;
 
   CurrencyRemoteSourceImpl({
-    required this.apiProvider,
+    required this.currencyService,
     required this.dateSettings,
   });
 
   @override
   Future<RatesOnDate> fetchRates() async {
-    final List<dynamic> todayResponse =
-        await apiProvider.request(CurrencyRatesApi.today());
-    final List<dynamic> alternativeResponse = await _fetchAlternativeRates();
+    final List<RateApi> todayResponse = await currencyService.fetchTodayRates();
+    final List<RateApi> alternativeResponse = await _fetchAlternativeRates();
     return _createResultList(
-      alternativeRates: alternativeResponse.toRateApiList(),
-      todayRates: todayResponse.toRateApiList(),
+      alternativeRates: alternativeResponse,
+      todayRates: todayResponse,
     );
   }
 
-  Future<List> _fetchAlternativeRates() async {
-    final List<dynamic> tomorrowResponse =
-        await apiProvider.request(CurrencyRatesApi.tomorrow());
+  Future<List<RateApi>> _fetchAlternativeRates() async {
+    final List<RateApi> tomorrowResponse =
+        await currencyService.fetchTomorrowRates();
 
     return tomorrowResponse.isNotEmpty
         ? tomorrowResponse
-        : await apiProvider.request(CurrencyRatesApi.yesterday());
+        : await currencyService.fetchYesterdayRates();
   }
 
   RatesOnDate _createResultList({
