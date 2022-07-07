@@ -1,8 +1,5 @@
-import 'package:flutter_currency/data/local/settings/extensions/date_settings_ext.dart';
-import 'package:flutter_currency/data/sources/local/cache/in_memory_cache.dart';
 import 'package:flutter_currency/data/sources/local/database/rates_dao.dart';
 import 'package:flutter_currency/data/sources/local/settings/currency_settings.dart';
-import 'package:flutter_currency/data/sources/local/settings/date_settings.dart';
 import 'package:flutter_currency/data/sources/remote/currency_remote_source.dart';
 import 'package:flutter_currency/domain/entities/rate.dart';
 import 'package:flutter_currency/domain/entities/rates_on_date.dart';
@@ -11,40 +8,39 @@ import 'package:get/get.dart';
 
 class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
   final CurrencyRemoteSource currencyRemoteSource;
-  final DateSettings dateSettings;
   final CurrencySettings currencySettings;
-  final InMemoryCache inMemoryCache;
   final RatesDao ratesDatabase;
 
   CurrencyRepoImpl({
     required this.currencyRemoteSource,
-    required this.dateSettings,
     required this.currencySettings,
-    required this.inMemoryCache,
     required this.ratesDatabase,
   });
 
+  /**
+   * there no sense to store web response in cache,
+   * becourse of it will be transformated to RatesOnDate any time.
+   * Better to store RatesOnDate? and check store for actual data on Date
+   */
+
   @override
   Future<RatesOnDate> fetchRates() async {
+
+    //todo here i should to receive RatesOnDate? no matter from where (cache or remote)
     final List<Rate> rates = await _fetchRatesFromCacheOrRemote();
     final List<Rate> ratesFiltered = await _syncWithSettings(rates);
-    return RatesOnDate(
-      rates: ratesFiltered,
-      currentDate: dateSettings.currentDate.asString(),
-      alternativeDate: dateSettings.alternativeDate.asString(),
-      isTomorrowRatesExists: dateSettings.isTomorrowRatesExists,
-    );
+    return
   }
 
   Future<List<Rate>> _fetchRatesFromCacheOrRemote() async {
-    final List<Rate> cachedRates = inMemoryCache.getCachedRates();
+    final List<Rate> cachedRates = [];//inMemoryCache.getCachedRates();
     if (cachedRates.isEmpty) return _fetchRatesThenCache();
     return cachedRates;
   }
 
   Future<List<Rate>> _fetchRatesThenCache() async {
     final List<Rate> ratesApi = await currencyRemoteSource.fetchRates();
-    inMemoryCache.cacheRates(ratesApi);
+    // inMemoryCache.cacheRates(ratesApi);
     return ratesApi;
   }
 

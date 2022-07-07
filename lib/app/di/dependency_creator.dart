@@ -12,6 +12,8 @@ import 'package:flutter_currency/data/sources/local/settings/currency_settings.d
 import 'package:flutter_currency/data/sources/local/settings/date_settings.dart';
 import 'package:flutter_currency/data/sources/remote/currency_remote_source.dart';
 import 'package:flutter_currency/domain/entities/rate.dart';
+import 'package:flutter_currency/domain/entities/rate_settings.dart';
+import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 import 'package:flutter_currency/domain/repositories/currency_repository.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -21,6 +23,8 @@ const dateSettingsTag = 'DateSettings';
 const currencySettingsTag = 'CurrencySettings';
 const inMemoryCache = 'InMemoryCache';
 const ratesBox = "ratesBox";
+const settingsBox = 'settingsBox';
+const ratesOnDate = 'ratesOnDate';
 
 class DependencyCreator {
   static init() async {
@@ -38,7 +42,11 @@ initSources() async {
   await GetStorage.init(inMemoryCache);
   await Hive.initFlutter();
   Hive.registerAdapter<Rate>(RateAdapter());
+  Hive.registerAdapter<RatesOnDate>(RatesOnDateAdapter());
+  Hive.registerAdapter<RateSettings>(RateSettingsAdapter());
   await Hive.openBox<List<Rate>>(ratesBox);
+  // await Hive.openBox<RatesOnDate>(settingsBox);
+  // await Hive.openBox<RateSettings>(ratesOnDate);
 }
 
 createSources() {
@@ -49,6 +57,8 @@ createSources() {
       tag: currencySettingsTag);
   Get.lazyPut<GetStorage>(() => GetStorage(inMemoryCache), tag: inMemoryCache);
   Get.lazyPut(() => Hive.box<List<Rate>>(ratesBox));
+  // Get.lazyPut(() => Hive.box<List<RatesOnDate>>(settingsBox));
+  // Get.lazyPut(() => Hive.box<List<RateSettings>>(ratesOnDate));
 }
 
 putImplementations() {

@@ -3,18 +3,21 @@ import 'package:flutter_currency/data/models/rate_model.dart';
 import 'package:flutter_currency/data/remote/remote_source_impl/extensions/currency_repo_ext.dart';
 import 'package:flutter_currency/data/remote/source/api_provider.dart';
 import 'package:flutter_currency/data/remote/source/apis/currency_api.dart';
+import 'package:flutter_currency/data/sources/local/settings/date_settings.dart';
 import 'package:flutter_currency/data/sources/remote/currency_remote_source.dart';
 import 'package:flutter_currency/domain/entities/rate.dart';
+import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 
 class CurrencyRemoteSourceImpl implements CurrencyRemoteSource {
-  final APIProvider apiProvider;
+  final DateSettings dateSettings;
 
   CurrencyRemoteSourceImpl({
-    required this.apiProvider
+    required this.apiProvider,
+    required this.dateSettings,
   });
 
   @override
-  Future<List<Rate>> fetchRates() async {
+  Future<RatesOnDate> fetchRates() async {
     final List<dynamic> todayResponse =
         await apiProvider.request(CurrencyRatesApi.today());
     final List<dynamic> alternativeResponse = await _fetchAlternativeRates();
@@ -33,16 +36,22 @@ class CurrencyRemoteSourceImpl implements CurrencyRemoteSource {
         : await apiProvider.request(CurrencyRatesApi.yesterday());
   }
 
-  List<Rate> _createResultList({
+  RatesOnDate _createResultList({
     required List<RateApi> todayRates,
     required List<RateApi> alternativeRates,
   }) {
-    return List<Rate>.generate(
+    final rates = List<Rate>.generate(
       todayRates.length,
       (index) => RateModel.fromActualAndAlternative(
         current: todayRates[index],
         alternative: alternativeRates[index],
       ),
+    );
+    return RatesOnDate(
+      rates: rates,
+      currentDate: dateSettings.currentDate.asString(),
+      alternativeDate: dateSettings.alternativeDate.asString(),
+      isTomorrowRatesExists: dateSettings.isTomorrowRatesExists,
     );
   }
 }
