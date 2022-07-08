@@ -1,6 +1,6 @@
 import 'package:flutter_currency/data/remote/source/exceptions.dart';
 import 'package:flutter_currency/domain/entities/rates_on_date.dart';
-import 'package:flutter_currency/domain/usecases/fetch_currency_rates_use_case.dart';
+import 'package:flutter_currency/domain/use_cases/fetch_currency_rates_use_case.dart';
 import 'package:flutter_currency/presentation/controllers/home/state.dart';
 import 'package:flutter_currency/presentation/pages/settings/view.dart';
 import 'package:get/get.dart';

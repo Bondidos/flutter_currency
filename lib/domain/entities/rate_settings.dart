@@ -25,4 +25,13 @@ class RateSettings {
     required this.listPos,
     required this.isShow,
   });
+
+  RateSettings changeVisibility() => RateSettings(
+        curAbbr: curAbbr,
+        curScale: curScale,
+        curName: curName,
+        id: id,
+        listPos: listPos,
+        isShow: !isShow,
+      );
 }

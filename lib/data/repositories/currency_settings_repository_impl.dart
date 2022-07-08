@@ -1,8 +1,10 @@
 import 'package:flutter_currency/data/sources/local/settings/currency_settings.dart';
 import 'package:flutter_currency/domain/entities/rate_settings.dart';
 import 'package:flutter_currency/domain/repositories/currency_settings_repository.dart';
+import 'package:get/get.dart';
 
-class CurrencySettingsRepositoryImpl implements CurrencySettingsRepository {
+class CurrencySettingsRepositoryImpl extends GetxService
+    implements CurrencySettingsRepository {
   final CurrencySettings currencySettings;
 
   CurrencySettingsRepositoryImpl({
@@ -10,13 +12,9 @@ class CurrencySettingsRepositoryImpl implements CurrencySettingsRepository {
   });
 
   @override
-  List<RateSettings> fetchSettings() {
-    // TODO: implement fetchSettings
-    throw UnimplementedError();
-  }
+  List<RateSettings> fetchSettings() => currencySettings.fetchSettings();
 
   @override
-  void saveSettings(Map<String, bool> settings) {
-    // TODO: implement saveSettings
-  }
+  void saveSettings(List<RateSettings> settings) =>
+      currencySettings.updateSettings(settings);
 }

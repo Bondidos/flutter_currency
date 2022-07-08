@@ -6,6 +6,5 @@ class FetchSettingsUseCase {
 
   FetchSettingsUseCase({required this.repository});
 
-  List<RateSettings> call(Map<String, bool> settings) =>
-      repository.fetchSettings();
+  List<RateSettings> call() => repository.fetchSettings();
 }

@@ -20,7 +20,7 @@ class CurrencySettingsImpl implements CurrencySettings {
   @override
   List<RateSettings> fetchSettings() {
     List list = currencySettings.get(currencySettingsKey) ?? [];
-    return list.map((e) => e as RateSettings).toList();
+    return list.cast<RateSettings>();
   }
 
   @override
