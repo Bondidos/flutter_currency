@@ -44,9 +44,10 @@ initSources() async {
   Hive.registerAdapter<Rate>(RateAdapter());
   Hive.registerAdapter<RatesOnDate>(RatesOnDateAdapter());
   Hive.registerAdapter<RateSettings>(RateSettingsAdapter());
+  // Hive.registerAdapter<List<RateSettings>>(SettingsListAdapter());
   // await Hive.openBox<List<Rate>>(ratesBox);
   await Hive.openBox<RatesOnDate>(ratesOnDate);
-  await Hive.openBox<List<RateSettings>>(settingsBox);
+  await Hive.openBox<List>(settingsBox);
 }
 
 createSources() {
@@ -58,7 +59,7 @@ createSources() {
   // Get.lazyPut<GetStorage>(() => GetStorage(inMemoryCache), tag: inMemoryCache);
   // Get.lazyPut(() => Hive.box<List<Rate>>(ratesBox));
   Get.lazyPut(() => Hive.box<RatesOnDate>(ratesOnDate));
-  Get.lazyPut(() => Hive.box<List<RateSettings>>(settingsBox));
+  Get.lazyPut(() => Hive.box<List>(settingsBox));
 }
 
 putImplementations() {
@@ -67,9 +68,6 @@ putImplementations() {
         dateSettings: Get.find(),
       ));
 
-  Get.lazyPut<CurrencyService>(() => CurrencyServiceImpl(
-        apiProvider: Get.find(),
-      ));
   Get.lazyPut<DateSettings>(() => DateSettingsImpl(
         storage: Get.find(tag: dateSettingsTag),
       ));
@@ -89,11 +87,12 @@ putImplementations() {
 }
 
 putServices() {
-  Get.lazyPut<CurrencyRepository>(
-    () => CurrencyRepoImpl(
-      currencyRemoteSource: Get.find(),
-      currencySettings: Get.find(),
-      ratesDao: Get.find(),
-    ),
-  );
+  Get.lazyPut<CurrencyRepository>(() => CurrencyRepoImpl(
+        currencyRemoteSource: Get.find(),
+        currencySettings: Get.find(),
+        ratesDao: Get.find(),
+      ));
+  Get.lazyPut<CurrencyService>(() => CurrencyServiceImpl(
+        apiProvider: Get.find(),
+      ));
 }

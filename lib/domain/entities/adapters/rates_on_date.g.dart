@@ -1,47 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'rate_settings.dart';
+part of '../rates_on_date.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class RateSettingsAdapter extends TypeAdapter<RateSettings> {
+class RatesOnDateAdapter extends TypeAdapter<RatesOnDate> {
   @override
-  final int typeId = 3;
+  final int typeId = 2;
 
   @override
-  RateSettings read(BinaryReader reader) {
+  RatesOnDate read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return RateSettings(
-      curAbbr: fields[1] as String,
-      curScale: fields[2] as int,
-      curName: fields[3] as String,
-      id: fields[0] as int,
-      listPos: fields[4] as int,
-      isShow: fields[5] as bool,
+    return RatesOnDate(
+      rates: (fields[0] as List).cast<Rate>(),
+      currentDate: fields[1] as String,
+      alternativeDate: fields[2] as String,
+      isTomorrowRatesExists: fields[3] as bool,
     );
   }
 
   @override
-  void write(BinaryWriter writer, RateSettings obj) {
+  void write(BinaryWriter writer, RatesOnDate obj) {
     writer
-      ..writeByte(6)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.curAbbr)
-      ..writeByte(2)
-      ..write(obj.curScale)
-      ..writeByte(3)
-      ..write(obj.curName)
       ..writeByte(4)
-      ..write(obj.listPos)
-      ..writeByte(5)
-      ..write(obj.isShow);
+      ..writeByte(0)
+      ..write(obj.rates)
+      ..writeByte(1)
+      ..write(obj.currentDate)
+      ..writeByte(2)
+      ..write(obj.alternativeDate)
+      ..writeByte(3)
+      ..write(obj.isTomorrowRatesExists);
   }
 
   @override
@@ -50,7 +44,7 @@ class RateSettingsAdapter extends TypeAdapter<RateSettings> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RateSettingsAdapter &&
+      other is RatesOnDateAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

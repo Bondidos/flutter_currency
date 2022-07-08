@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'rate_settings.g.dart';
+part 'adapters/rate_settings.g.dart';
 
 @HiveType(typeId: 3)
 class RateSettings {

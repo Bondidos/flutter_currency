@@ -1,7 +1,7 @@
 import 'package:flutter_currency/domain/entities/rate.dart';
 import 'package:hive_flutter/adapters.dart';
 
-part 'rates_on_date.g.dart';
+part 'adapters/rates_on_date.g.dart';
 
 @HiveType(typeId: 2)
 class RatesOnDate {

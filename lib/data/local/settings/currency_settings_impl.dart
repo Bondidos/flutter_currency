@@ -7,7 +7,7 @@ import 'package:hive/hive.dart';
 const currencySettingsKey = 'currencySettings';
 
 class CurrencySettingsImpl implements CurrencySettings {
-  final Box<List<RateSettings>> currencySettings;
+  final Box<List> currencySettings;
 
   CurrencySettingsImpl({
     required this.currencySettings,
@@ -19,8 +19,8 @@ class CurrencySettingsImpl implements CurrencySettings {
 
   @override
   List<RateSettings> fetchSettings() {
-    var list = currencySettings.get(currencySettingsKey) ?? [];
-    return list;
+    List list = currencySettings.get(currencySettingsKey) ?? [];
+    return list.map((e) => e as RateSettings).toList();
   }
 
   @override

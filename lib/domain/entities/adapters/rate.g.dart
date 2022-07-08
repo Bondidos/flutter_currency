@@ -1,41 +1,47 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'rates_on_date.dart';
+part of '../rate.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class RatesOnDateAdapter extends TypeAdapter<RatesOnDate> {
+class RateAdapter extends TypeAdapter<Rate> {
   @override
-  final int typeId = 2;
+  final int typeId = 1;
 
   @override
-  RatesOnDate read(BinaryReader reader) {
+  Rate read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return RatesOnDate(
-      rates: (fields[0] as List).cast<Rate>(),
-      currentDate: fields[1] as String,
-      alternativeDate: fields[2] as String,
-      isTomorrowRatesExists: fields[3] as bool,
+    return Rate(
+      curId: fields[0] as int,
+      curAbbr: fields[1] as String,
+      curScale: fields[2] as int,
+      curName: fields[3] as String,
+      actualCurRate: fields[4] as double?,
+      alternativeCurRate: fields[5] as double?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, RatesOnDate obj) {
+  void write(BinaryWriter writer, Rate obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(6)
       ..writeByte(0)
-      ..write(obj.rates)
+      ..write(obj.curId)
       ..writeByte(1)
-      ..write(obj.currentDate)
+      ..write(obj.curAbbr)
       ..writeByte(2)
-      ..write(obj.alternativeDate)
+      ..write(obj.curScale)
       ..writeByte(3)
-      ..write(obj.isTomorrowRatesExists);
+      ..write(obj.curName)
+      ..writeByte(4)
+      ..write(obj.actualCurRate)
+      ..writeByte(5)
+      ..write(obj.alternativeCurRate);
   }
 
   @override
@@ -44,7 +50,7 @@ class RatesOnDateAdapter extends TypeAdapter<RatesOnDate> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RatesOnDateAdapter &&
+      other is RateAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

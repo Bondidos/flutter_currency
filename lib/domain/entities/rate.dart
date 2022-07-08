@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-part 'rate.g.dart';
+part 'adapters/rate.g.dart';
 
 @HiveType(typeId: 1)
 class Rate{
