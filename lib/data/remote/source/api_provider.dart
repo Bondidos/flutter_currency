@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 import 'api_request_representable.dart';
 import 'exceptions.dart';
@@ -8,9 +9,10 @@ import 'exceptions.dart';
 class APIProvider {
   static const requestTimeOut = Duration(seconds: 25);
   final _client = GetConnect(timeout: requestTimeOut);
-
+  final Logger logger = Logger();
   Future request(APIRequestRepresentable request) async {
     try {
+      logger.d(request.url+request.query.toString());
       final response = await _client.request(
         request.url,
         request.method.string,
@@ -18,6 +20,7 @@ class APIProvider {
         query: request.query,
         body: request.body,
       );
+      logger.d(response.statusCode);
       return _returnResponse(response);
     } on TimeoutException catch (_) {
       throw TimeOutException(null);

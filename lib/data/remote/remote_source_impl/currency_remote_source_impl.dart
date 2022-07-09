@@ -1,3 +1,4 @@
+import 'package:flutter_currency/data/models/currency_api.dart';
 import 'package:flutter_currency/data/models/rate_api.dart';
 import 'package:flutter_currency/data/models/rate_model.dart';
 import 'package:flutter_currency/data/remote/remote_source_impl/extensions/currency_repo_ext.dart';
@@ -53,5 +54,11 @@ class CurrencyRemoteSourceImpl implements CurrencyRemoteSource {
       alternativeDate: dateSettings.alternativeDate.asString(),
       isTomorrowRatesExists: dateSettings.isTomorrowRatesExists,
     );
+  }
+
+  @override
+  Future<List<CurrencyApi>> fetchCurrencyInfo() async {
+    List<CurrencyApi> info = await currencyService.fetchCurrencyInfo();
+    return info.filterOld();
   }
 }

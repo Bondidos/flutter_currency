@@ -1,8 +1,8 @@
+import 'package:flutter_currency/data/models/currency_api.dart';
 import 'package:flutter_currency/data/repositories/extensions/currency_repo_ext.dart';
 import 'package:flutter_currency/data/sources/local/database/rates_dao.dart';
 import 'package:flutter_currency/data/sources/local/settings/currency_settings.dart';
 import 'package:flutter_currency/data/sources/remote/currency_remote_source.dart';
-import 'package:flutter_currency/domain/entities/rate.dart';
 import 'package:flutter_currency/domain/entities/rate_settings.dart';
 import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 import 'package:flutter_currency/domain/repositories/currency_repository.dart';
@@ -23,13 +23,13 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
   Future<RatesOnDate> fetchRates() async {
     final RatesOnDate ratesOnDate = await _fetchRatesFromCacheOrRemote();
     List<RateSettings> settings = currencySettings.fetchSettings();
-    if(settings.isEmpty) settings = _createSettings(ratesOnDate.rates);
+    if (settings.isEmpty) settings = await _createSettings();
     return ratesOnDate.applySettings(settings);
   }
 
   Future<RatesOnDate> _fetchRatesFromCacheOrRemote() async {
     final RatesOnDate? ratesOnDate = ratesDao.getRates();
-    if(ratesOnDate == null) return _fetchRatesThenCache();
+    if (ratesOnDate == null) return _fetchRatesThenCache();
     return ratesOnDate;
   }
 
@@ -39,9 +39,10 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
     return ratesOnDate;
   }
 
-  List<RateSettings> _createSettings(List<Rate> rates) {
-    currencySettings.createSettings(rates);
+  Future<List<RateSettings>> _createSettings() async {
+    final List<CurrencyApi> currencyInfoApi =
+        await currencyRemoteSource.fetchCurrencyInfo();
+    currencySettings.createSettings(currencyInfoApi);
     return currencySettings.fetchSettings();
   }
 }
-

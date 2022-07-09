@@ -1,3 +1,3 @@
 class APIBaseUrl {
-  static String get currencyRates => "https://www.nbrb.by";
+  static String get bnrBank => "https://www.nbrb.by";
 }

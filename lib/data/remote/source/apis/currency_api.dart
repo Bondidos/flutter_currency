@@ -23,7 +23,7 @@ class CurrencyRatesApi implements APIRequestRepresentable {
   get body => null;
 
   @override
-  String get baseUrl => APIBaseUrl.currencyRates;
+  String get baseUrl => APIBaseUrl.bnrBank;
 
   @override
   Map<String, String>? get headers => {};
