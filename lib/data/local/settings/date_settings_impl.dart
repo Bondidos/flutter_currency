@@ -34,6 +34,8 @@ class DateSettingsImpl implements DateSettings {
     DateTime lastRequestDate = currentDate;
     if (lastRequestDate.millisecondsSinceEpoch == noCurrentDate) return false;
     DateTime dateNow = DateTime.now();
-    return dateNow.isAfter(lastRequestDate);
+    Duration difference = dateNow.difference(lastRequestDate);
+    if (difference > const Duration(days: 1)) return false;
+    return true;
   }
 }

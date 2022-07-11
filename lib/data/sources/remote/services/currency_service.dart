@@ -6,4 +6,5 @@ abstract class CurrencyService{
   Future<List<RateApi>> fetchTomorrowRates();
   Future<List<RateApi>> fetchYesterdayRates();
   Future<List<CurrencyApi>> fetchCurrencyInfo();
+  Future<List<RateApi>> fetchLastKnownRates();
 }

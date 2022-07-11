@@ -91,6 +91,7 @@ putServices() {
       ));
   Get.lazyPut<CurrencyService>(() => CurrencyServiceImpl(
         apiProvider: Get.find(),
+        dateSettings: Get.find(),
       ));
   Get.lazyPut<CurrencySettingsRepository>(() => CurrencySettingsRepositoryImpl(
         currencySettings: Get.find(),

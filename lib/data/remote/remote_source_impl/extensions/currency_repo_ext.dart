@@ -1,14 +1,6 @@
 import 'package:flutter_currency/data/models/currency_api.dart';
-import 'package:intl/intl.dart';
 
 const everyDay = 0;
-
-extension DateToString on DateTime {
-  String asString() {
-    DateFormat format = DateFormat("dd.MM.yyyy");
-    return format.format(this);
-  }
-}
 
 extension Filter on List<CurrencyApi> {
   List<CurrencyApi> filterOld() {

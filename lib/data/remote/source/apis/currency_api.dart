@@ -19,6 +19,8 @@ class CurrencyRatesApi implements APIRequestRepresentable {
 
   CurrencyRatesApi.tomorrow() : this._(onDate: OnDate.tomorrow.toStringAndSave);
 
+  CurrencyRatesApi.onDate(String onDate) : this._(onDate: onDate);
+
   @override
   get body => null;
 

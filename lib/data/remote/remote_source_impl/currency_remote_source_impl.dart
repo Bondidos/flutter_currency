@@ -1,3 +1,4 @@
+import 'package:flutter_currency/app/extensions/common.dart';
 import 'package:flutter_currency/data/models/currency_api.dart';
 import 'package:flutter_currency/data/models/rate_api.dart';
 import 'package:flutter_currency/data/models/rate_model.dart';
@@ -30,10 +31,11 @@ class CurrencyRemoteSourceImpl implements CurrencyRemoteSource {
   Future<List<RateApi>> _fetchAlternativeRates() async {
     final List<RateApi> tomorrowResponse =
         await currencyService.fetchTomorrowRates();
-
-    return tomorrowResponse.isNotEmpty
-        ? tomorrowResponse
-        : await currencyService.fetchYesterdayRates();
+    if (tomorrowResponse.isNotEmpty) return tomorrowResponse;
+    final List<RateApi> yesterdayResponse =
+        await currencyService.fetchYesterdayRates();
+    if (yesterdayResponse.isNotEmpty) return yesterdayResponse;
+    return currencyService.fetchLastKnownRates();
   }
 
   RatesOnDate _createResultList({
