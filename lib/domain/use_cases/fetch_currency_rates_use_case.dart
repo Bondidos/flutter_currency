@@ -8,5 +8,5 @@ class FetchCurrencyRatesUseCase {
     required this.repository,
   });
 
-  Future<RatesOnDate> call() => repository.fetchRates();
+  Stream<RatesOnDate?> call() => repository.fetchRates();
 }

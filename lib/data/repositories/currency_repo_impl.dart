@@ -7,6 +7,7 @@ import 'package:flutter_currency/domain/entities/rate_settings.dart';
 import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 import 'package:flutter_currency/domain/repositories/currency_repository.dart';
 import 'package:get/get.dart';
+import 'package:rxdart/rxdart.dart';
 
 class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
   final CurrencyRemoteSource currencyRemoteSource;
@@ -19,15 +20,36 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
     required this.ratesDao,
   });
 
+  late Stream<RatesOnDate> ratesOnDateStream;
+  late Stream<List<RateSettings>> settingsStream;
+
+  late Stream<RatesOnDate?> result;
+
   @override
-  Future<RatesOnDate> fetchRates() async {
-    final RatesOnDate ratesOnDate = await _fetchRatesFromCacheOrRemote();
-    List<RateSettings> settings = currencySettings.fetchSettings();
-    if (settings.isEmpty) settings = await _createSettings();
-    return ratesOnDate.applySettings(settings);
+  void onInit() {
+    ratesOnDateStream = Stream.fromFuture(_fetchRatesFromCacheOrRemote());
+    settingsStream = currencySettings.subscribeSettings;
+    result = CombineLatestStream.combine2(
+        ratesOnDateStream,
+        settingsStream,
+        (RatesOnDate rates, List<RateSettings> settings) {
+          if(settings.isEmpty) {
+        _createSettings();
+        return null;
+      }
+      return rates.applySettings(settings);
+        });
+    super.onInit();
+  }
+
+  @override
+  Stream<RatesOnDate?> fetchRates() {
+    return result;
   }
 
   Future<RatesOnDate> _fetchRatesFromCacheOrRemote() async {
+    // _createSettings();//todo logic
+
     final RatesOnDate? ratesOnDate = ratesDao.getRates();
     if (ratesOnDate == null) return _fetchRatesThenCache();
     return ratesOnDate;
@@ -39,10 +61,9 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
     return ratesOnDate;
   }
 
-  Future<List<RateSettings>> _createSettings() async {
+  Future<void> _createSettings() async {
     final List<CurrencyApi> currencyInfoApi =
         await currencyRemoteSource.fetchCurrencyInfo();
     currencySettings.createSettings(currencyInfoApi);
-    return currencySettings.fetchSettings();
   }
 }
