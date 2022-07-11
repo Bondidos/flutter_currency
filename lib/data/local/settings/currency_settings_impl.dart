@@ -24,8 +24,8 @@ class CurrencySettingsImpl implements CurrencySettings {
   }
 
   @override
-  void updateSettings(List<RateSettings> settings) {
-    currencySettings.clear();
+  void updateSettings(List<RateSettings> settings) async{
+    await currencySettings.clear();
     currencySettings.put(currencySettingsKey, settings);
   }
 }

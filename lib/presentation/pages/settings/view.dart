@@ -22,24 +22,25 @@ class SettingsPage extends GetView<SettingsLogic> {
           ),
         ],
       ),
-      body: GetBuilder<SettingsLogic>(
-        builder: (logic) {
-          var list = _generateList(logic);
+      body: Obx(
+        () {
           return ReorderableListView(
-              children: list, onReorder: (int oldIndex, int newIndex) {});
+            children: _generateList(controller.settings),
+            onReorder: (int oldIndex, int newIndex) {},
+          );
         },
       ),
     );
   }
 }
 
-_generateList(SettingsLogic logic) {
+_generateList(List<RateSettings> list) {
   return List.generate(
-    logic.settings.length,
+    list.length,
     (index) =>
         // ListTile(title: Text(logic.settings[index].curAbbr),key: Key('$index')),
         SettingItem(
-      setting: logic.settings[index],
+      setting: list[index],
       key: Key('$index'),
     ),
   );

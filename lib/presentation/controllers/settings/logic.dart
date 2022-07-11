@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 class SettingsLogic extends GetxController {
   final FetchSettingsUseCase fetchSettingsUseCase;
   final SaveCurrencySettingsUseCase saveCurrencySettingsUseCase;
-  List<RateSettings> settings = <RateSettings>[].obs;
+  var settings = <RateSettings>[].obs;
 
   SettingsLogic({
     required this.fetchSettingsUseCase,
@@ -16,27 +16,34 @@ class SettingsLogic extends GetxController {
   @override
   void onInit() {
     _fetchSettings();
+    _saveSettingsOnChange();
     super.onInit();
   }
 
-  void _fetchSettings() => settings = fetchSettingsUseCase();
+  void _fetchSettings() {
+    var settingsData = fetchSettingsUseCase();
+    settings.assignAll(settingsData);
+  }
+  void _saveSettingsOnChange(){
+    ever<List<RateSettings>>(settings, (list) => _saveSettings(list));
+  }
+
+  void _saveSettings(List<RateSettings> list) {
+    if (list.isNotEmpty) saveCurrencySettingsUseCase(list);
+    return;
+  }
 
   void setNewIndexes(int id, int oldIndex, int newIndex) {}
 
   void changeVisibility(int id) {
-    var place = settings.indexWhere((element) => element.id == id);
     List<RateSettings> newList = List.generate(
       settings.length,
-      (index) =>
-          index != place ? settings[index] : settings[index].changeVisibility(),
+      (index) => settings[index].id != id
+          ? settings[index]
+          : settings[index].changeVisibility(),
     );
-    settings.addAll(newList);
-    // settings = newList;
-    // update(); //todo something
+    settings.assignAll(newList);
   }
 
-  void saveAndReturnHome() {
-    saveCurrencySettingsUseCase(settings);
-    Get.back();
-  }
+  void saveAndReturnHome() => Get.back();
 }
