@@ -3,5 +3,5 @@ import 'package:rxdart/rxdart.dart';
 
 abstract class RatesDao{
   void saveRatesOnDate(RatesOnDate rates);
-  BehaviorSubject<RatesOnDate?> subscribe();
+  Stream<RatesOnDate?> subscribe();
 }

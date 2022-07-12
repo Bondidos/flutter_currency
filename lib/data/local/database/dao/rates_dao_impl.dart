@@ -10,22 +10,25 @@ const ratesOnDateKey = 'ratesOnDateKey';
 class RatesDaoImpl implements RatesDao {
   final Box<RatesOnDate> ratesBox;
   final DateSettings dateSettings;
-  final BehaviorSubject<RatesOnDate?> ratesStream = BehaviorSubject();
+  final BehaviorSubject<RatesOnDate?> cacheDataStream = BehaviorSubject();
+
 
   RatesDaoImpl({
     required this.ratesBox,
     required this.dateSettings,
-  });
+  }) {
+    cacheDataStream.add(_readData);
+  }
 
   @override
-  BehaviorSubject<RatesOnDate?> subscribe() => ratesStream..add(_readData());
+  Stream<RatesOnDate?> subscribe() => cacheDataStream.stream;
 
   @override
   void saveRatesOnDate(RatesOnDate rates) =>
       ratesBox.put(ratesOnDateKey, rates);
 
-  RatesOnDate? _readData(){
-    if(dateSettings.isCurrentDateActual) return ratesBox.get(ratesOnDateKey);
+  RatesOnDate? get _readData {
+    if (dateSettings.isCurrentDateActual) return ratesBox.get(ratesOnDateKey);
     return null;
   }
 }

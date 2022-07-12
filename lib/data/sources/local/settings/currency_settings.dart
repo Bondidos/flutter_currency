@@ -4,6 +4,6 @@ import 'package:rxdart/rxdart.dart';
 
 abstract class CurrencySettings{
   void createSettings(List<CurrencyApi> currencyInfo);
-  BehaviorSubject<List<RateSettings>> get subscribeSettings;
+  Stream<List<RateSettings>> subscribeSettings();
   void updateSettings(List<RateSettings> settings);
 }

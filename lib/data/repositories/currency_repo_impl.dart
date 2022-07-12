@@ -20,40 +20,36 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
     required this.ratesDao,
   });
 
-  BehaviorSubject<RatesOnDate>? ratesOnDateStream;
-  BehaviorSubject<List<RateSettings>>? settingsStream;
-  BehaviorSubject<RatesOnDate>? cacheStream;
-
-  late Stream<RatesOnDate?> result;
-
-  @override
-  void onInit() {
-    ratesOnDateStream = BehaviorSubject.fromFuture(_fetchRatesFromCacheOrRemote());
-    settingsStream = currencySettings.subscribeSettings;
-    super.onInit();
-  }
-
+  //todo first time launch may be an error
   @override
   Stream<RatesOnDate?> fetchRates() {
-    return result = CombineLatestStream.combine2(
-        ratesOnDateStream ?? const Stream<RatesOnDate>.empty(),
-        settingsStream ?? const Stream<List<RateSettings>>.empty(),
-        (RatesOnDate rates, List<RateSettings> settings) {
-      if (settings.isEmpty) {
-        _createSettings();
-        return null;
-      }
-      return rates.applySettings(settings);
-    });
+    final Stream<List<RateSettings>> settings =
+        currencySettings.subscribeSettings().switchMap(createIfEmpty);
+
+    final Stream<RatesOnDate?> ratesOnDate =
+        ratesDao.subscribe().switchMap(fetchDataFromCacheOrRemote);
+
+    return CombineLatestStream.combine2(
+        settings,
+        ratesOnDate,
+        (List<RateSettings> settings, RatesOnDate? rates) =>
+            rates?.applySettings(settings));
   }
 
-  Future<RatesOnDate> _fetchRatesFromCacheOrRemote() async {
-    final RatesOnDate? ratesOnDate = ratesDao.getRates();
-    if (ratesOnDate == null) return _fetchRatesThenCache();
-    return ratesOnDate;
+  Stream<List<RateSettings>> createIfEmpty(List<RateSettings> settings) {
+    if (settings.isEmpty) _createSettings();
+    return Stream.value(settings);
   }
 
-  Future<RatesOnDate> _fetchRatesThenCache() async {
+  Stream<RatesOnDate?> fetchDataFromCacheOrRemote(cachedData) {
+    if (cachedData == null) {
+      return Stream<RatesOnDate?>.fromFuture(_fetchRatesThenCache());
+    } else {
+      return Stream.value(cachedData);
+    }
+  }
+
+  _fetchRatesThenCache() async {
     final RatesOnDate ratesOnDate = await currencyRemoteSource.fetchRates();
     ratesDao.saveRatesOnDate(ratesOnDate);
     return ratesOnDate;
@@ -63,13 +59,5 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
     final List<CurrencyApi> currencyInfoApi =
         await currencyRemoteSource.fetchCurrencyInfo();
     currencySettings.createSettings(currencyInfoApi);
-  }
-
-  @override
-  void onClose() {
-    ratesOnDateStream = null;
-    settingsStream = null;
-    cacheStream = null;
-    super.onClose();
   }
 }

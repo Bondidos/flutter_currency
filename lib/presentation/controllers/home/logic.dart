@@ -19,7 +19,7 @@ class HomeLogic extends GetxController with StateMixin<HomeState> {
     fetchRates();
     super.onInit();
   }
-
+//todo make buty
   late StreamSubscription<RatesOnDate?> str;
 
   Future<void> fetchRates() async {
