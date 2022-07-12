@@ -20,36 +20,34 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
     required this.ratesDao,
   });
 
-  late Stream<RatesOnDate> ratesOnDateStream;
-  late Stream<List<RateSettings>> settingsStream;
+  BehaviorSubject<RatesOnDate>? ratesOnDateStream;
+  BehaviorSubject<List<RateSettings>>? settingsStream;
+  BehaviorSubject<RatesOnDate>? cacheStream;
 
   late Stream<RatesOnDate?> result;
 
   @override
   void onInit() {
-    ratesOnDateStream = Stream.fromFuture(_fetchRatesFromCacheOrRemote());
+    ratesOnDateStream = BehaviorSubject.fromFuture(_fetchRatesFromCacheOrRemote());
     settingsStream = currencySettings.subscribeSettings;
-    result = CombineLatestStream.combine2(
-        ratesOnDateStream,
-        settingsStream,
-        (RatesOnDate rates, List<RateSettings> settings) {
-          if(settings.isEmpty) {
-        _createSettings();
-        return null;
-      }
-      return rates.applySettings(settings);
-        });
     super.onInit();
   }
 
   @override
   Stream<RatesOnDate?> fetchRates() {
-    return result;
+    return result = CombineLatestStream.combine2(
+        ratesOnDateStream ?? const Stream<RatesOnDate>.empty(),
+        settingsStream ?? const Stream<List<RateSettings>>.empty(),
+        (RatesOnDate rates, List<RateSettings> settings) {
+      if (settings.isEmpty) {
+        _createSettings();
+        return null;
+      }
+      return rates.applySettings(settings);
+    });
   }
 
   Future<RatesOnDate> _fetchRatesFromCacheOrRemote() async {
-    // _createSettings();//todo logic
-
     final RatesOnDate? ratesOnDate = ratesDao.getRates();
     if (ratesOnDate == null) return _fetchRatesThenCache();
     return ratesOnDate;
@@ -65,5 +63,13 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
     final List<CurrencyApi> currencyInfoApi =
         await currencyRemoteSource.fetchCurrencyInfo();
     currencySettings.createSettings(currencyInfoApi);
+  }
+
+  @override
+  void onClose() {
+    ratesOnDateStream = null;
+    settingsStream = null;
+    cacheStream = null;
+    super.onClose();
   }
 }
