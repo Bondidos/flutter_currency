@@ -12,9 +12,10 @@ class CurrencySettingsRepositoryImpl extends GetxService
   });
 
   @override
-  List<RateSettings> fetchSettings() => throw UnimplementedError();//currencySettings.subscribeSettings();
+  Stream<List<RateSettings>> fetchSettings() => currencySettings
+      .subscribeSettings();
 
   @override
   void saveSettings(List<RateSettings> settings) =>
-      currencySettings.updateSettings(settings);
+      currencySettings.saveSettings(settings);
 }

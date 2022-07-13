@@ -9,28 +9,40 @@ const currencySettingsKey = 'currencySettings';
 
 class CurrencySettingsImpl implements CurrencySettings {
   final Box<List> currencySettings;
-  final BehaviorSubject<List<RateSettings>> settingsStream = BehaviorSubject();
-
+  final BehaviorSubject<List<RateSettings>> settingsStream =
+      BehaviorSubject();
   CurrencySettingsImpl({
     required this.currencySettings,
   }) {
-    settingsStream.add(_read);
-    currencySettings
+    _addLastToStream();
+/*    currencySettings
         .watch(key: currencySettingsKey)
-        .listen((event) => settingsStream.sink.add(event.value));
+        .listen((event) =>
+        settingsStream.sink.add(event.value),
+    );*/
+  }
+
+  void _addLastToStream() {
+    final List<RateSettings> settings =
+        currencySettings.get(currencySettingsKey)?.cast() ??
+            [RateSettings(curAbbr: 'curAbbr', curScale: 1, curName: 'curName', id: 1, listPos: 1, isShow: true)];
+    settingsStream.sink.add(settings);
   }
 
   @override
-  void createSettings(List<CurrencyApi> info) =>
-      currencySettings.put(currencySettingsKey, info.createSettings());
+  Future<void> createSettings(List<CurrencyApi> info) async {
+    // await currencySettings.clear();
+    await currencySettings.put(currencySettingsKey, info.createSettings());
+    _addLastToStream();
+  }
 
   @override
   Stream<List<RateSettings>> subscribeSettings() => settingsStream.stream;
 
-  List<RateSettings> get _read =>
-      currencySettings.get(currencySettingsKey)?.cast() ?? [];
-
   @override
-  void updateSettings(List<RateSettings> settings) =>
-      currencySettings.put(currencySettingsKey, settings);
+  Future<void> saveSettings(List<RateSettings> settings) async {
+    // await currencySettings.clear();
+    await currencySettings.put(currencySettingsKey, settings);
+    _addLastToStream();
+  }
 }

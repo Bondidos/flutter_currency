@@ -24,8 +24,10 @@ class RatesDaoImpl implements RatesDao {
   Stream<RatesOnDate?> subscribe() => cacheDataStream.stream;
 
   @override
-  void saveRatesOnDate(RatesOnDate rates) =>
-      ratesBox.put(ratesOnDateKey, rates);
+  void saveRatesOnDate(RatesOnDate rates) {
+    ratesBox.put(ratesOnDateKey, rates);
+    cacheDataStream.add(_readData);
+  }
 
   RatesOnDate? get _readData {
     if (dateSettings.isCurrentDateActual) return ratesBox.get(ratesOnDateKey);
