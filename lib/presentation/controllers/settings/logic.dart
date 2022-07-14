@@ -18,31 +18,25 @@ class SettingsLogic extends GetxController {
   @override
   void onInit() {
     _fetchSettings();
-    // _saveSettingsOnChange();
     super.onInit();
   }
 
   StreamSubscription<List<RateSettings>>? rateSettingsStream;
 
   void _fetchSettings() {
-    rateSettingsStream =
-        fetchSettings().
-        listen((list) =>
-            settings.assignAll(list)
-        );
-    // var settingsData = fetchSettingsUseCase();
-    // settings.assignAll(settingsData);
+    rateSettingsStream = fetchSettings().listen(
+      (list) {
+        if (settings.isEmpty) settings.assignAll(list);
+      },
+    );
   }
 
-  void _saveSettingsOnChange() {
-    ever<List<RateSettings>>(settings, (list) => _saveSettings(list));
-  }
+  void _saveSettings(List<RateSettings> list) =>
+      saveCurrencySettingsUseCase(params: list);
 
-  Future<void> _saveSettings(List<RateSettings> list) async{
-    saveCurrencySettingsUseCase(params: list);
+  void setNewIndexes(int id, int oldIndex, int newIndex) {
+    //todo implement method
   }
-
-  void setNewIndexes(int id, int oldIndex, int newIndex) {}
 
   void changeVisibility(int id) {
     List<RateSettings> newList = List.generate(
@@ -55,14 +49,13 @@ class SettingsLogic extends GetxController {
   }
 
   void saveAndReturnHome() {
-    //should to cancel subscription? cuz empty list emitting in stream
-    rateSettingsStream?.cancel();
     _saveSettings(settings);
     Get.back();
   }
 
   @override
-  void onClose() {
+  void onClose() async {
+    rateSettingsStream?.cancel();
     super.onClose();
   }
 }

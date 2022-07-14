@@ -13,11 +13,6 @@ class HomeLogic extends GetxController with StateMixin<HomeState> {
     required this.fetchRatesUseCase,
   });
 
-  /**
-   * stream should to create here and pass it sink to the repository
-   * by usecase, after it close here by dispose method
-   */
-
   @override
   void onInit() async {
     fetchRates();
@@ -51,7 +46,7 @@ class HomeLogic extends GetxController with StateMixin<HomeState> {
 
   @override
   void onClose() {
-    ratesOnDateStream = null;
+    ratesOnDateStream?.cancel();
     super.onClose();
   }
 }

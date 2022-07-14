@@ -9,29 +9,22 @@ const currencySettingsKey = 'currencySettings';
 
 class CurrencySettingsImpl implements CurrencySettings {
   final Box<List> currencySettings;
-  final BehaviorSubject<List<RateSettings>> settingsStream =
-      BehaviorSubject();
+  final BehaviorSubject<List<RateSettings>> settingsStream = BehaviorSubject();
+
   CurrencySettingsImpl({
     required this.currencySettings,
   }) {
     _addLastToStream();
-/*    currencySettings
-        .watch(key: currencySettingsKey)
-        .listen((event) =>
-        settingsStream.sink.add(event.value),
-    );*/
   }
 
   void _addLastToStream() {
     final List<RateSettings> settings =
-        currencySettings.get(currencySettingsKey)?.cast() ??
-            [RateSettings(curAbbr: 'curAbbr', curScale: 1, curName: 'curName', id: 1, listPos: 1, isShow: true)];
+        currencySettings.get(currencySettingsKey)?.cast() ?? [];
     settingsStream.sink.add(settings);
   }
 
   @override
   Future<void> createSettings(List<CurrencyApi> info) async {
-    // await currencySettings.clear();
     await currencySettings.put(currencySettingsKey, info.createSettings());
     _addLastToStream();
   }
@@ -41,7 +34,6 @@ class CurrencySettingsImpl implements CurrencySettings {
 
   @override
   Future<void> saveSettings(List<RateSettings> settings) async {
-    // await currencySettings.clear();
     await currencySettings.put(currencySettingsKey, settings);
     _addLastToStream();
   }

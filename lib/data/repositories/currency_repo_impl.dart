@@ -20,10 +20,9 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
     required this.ratesDao,
   });
 
-  //todo first time launch may be an error
   @override
   Stream<RatesOnDate?> fetchRates() {
-    final Stream<List<RateSettings>?> settings =
+    final Stream<List<RateSettings>> settings =
         currencySettings.subscribeSettings().switchMap(createIfEmpty);
 
     final Stream<RatesOnDate?> ratesOnDate =
@@ -32,18 +31,18 @@ class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
     return CombineLatestStream.combine2(
         settings,
         ratesOnDate,
-        (List<RateSettings>? settings, RatesOnDate? rates) {
-          if(settings == null || rates == null) return null;
+        (List<RateSettings> settings, RatesOnDate? rates) {
+          if(settings.isEmpty || rates == null) return null;
           return rates.applySettings(settings);
         });
   }
 
-  Stream<List<RateSettings>?> createIfEmpty(List<RateSettings> settings) {
+  Stream<List<RateSettings>> createIfEmpty(List<RateSettings> settings) {
     if (settings.isEmpty) {
       _createSettings();
-      return Stream.value(null);
+      return Stream<List<RateSettings>>.value(List.empty());
     }
-    return Stream.value(settings);
+    return Stream<List<RateSettings>>.value(settings);
   }
 
   Stream<RatesOnDate?> fetchDataFromCacheOrRemote(cachedData) {
