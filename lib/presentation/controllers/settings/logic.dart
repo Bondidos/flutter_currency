@@ -34,8 +34,10 @@ class SettingsLogic extends GetxController {
   void _saveSettings(List<RateSettings> list) =>
       saveCurrencySettingsUseCase(params: list);
 
-  void setNewIndexes(int id, int oldIndex, int newIndex) {
-    //todo implement method
+  void setNewIndexes(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) newIndex -= 1;
+    final RateSettings item = settings.removeAt(oldIndex);
+    settings.insert(newIndex, item);
   }
 
   void changeVisibility(int id) {
@@ -49,7 +51,7 @@ class SettingsLogic extends GetxController {
   }
 
   void saveAndReturnHome() {
-    _saveSettings(settings);
+    _saveSettings(settings.refreshPositionSettings());
     Get.back();
   }
 
@@ -58,4 +60,9 @@ class SettingsLogic extends GetxController {
     rateSettingsStream?.cancel();
     super.onClose();
   }
+}
+
+extension RefreshListPositions on List<RateSettings> {
+  List<RateSettings> refreshPositionSettings() =>
+      map((item) => item.updateListPos(indexOf(item))).toList();
 }

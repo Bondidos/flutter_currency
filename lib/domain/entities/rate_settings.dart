@@ -34,4 +34,13 @@ class RateSettings {
         listPos: listPos,
         isShow: !isShow,
       );
+
+  RateSettings updateListPos(int index) => RateSettings(
+        curAbbr: curAbbr,
+        curScale: curScale,
+        curName: curName,
+        id: id,
+        listPos: index,
+        isShow: isShow,
+      );
 }
