@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_currency/presentation/app_drawer/view.dart';
 import 'package:flutter_currency/presentation/pages/home/widgets/date_panel.dart';
 import 'package:flutter_currency/presentation/pages/home/widgets/rate_item.dart';
 import 'package:get/get.dart';
@@ -16,11 +17,12 @@ class HomePage extends GetView<HomeLogic> {
         title: const Text("Currencies"),
         actions: [
           IconButton(
-              onPressed: controller.navigateSettings,
-              icon: const Icon(Icons.settings),
+            onPressed: controller.navigateSettings,
+            icon: const Icon(Icons.settings),
           )
         ],
       ),
+      drawer: const AppDrawer(),
       body: RefreshIndicator(
         onRefresh: controller.fetchRates,
         child: controller.obx(
