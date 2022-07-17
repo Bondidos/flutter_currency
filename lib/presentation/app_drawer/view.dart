@@ -20,22 +20,22 @@ class AppDrawer extends GetView<MenuLogic> {
           ListTile(
             title: const Text('Home'),
             onTap: () {
-              controller.navigateToHome();
               Navigator.pop(context);
+              controller.navigateToHome();
             },
           ),
           ListTile(
             title: const Text('Calculate rates'),
             onTap: () {
-              controller.navigateToCalculator();
               Navigator.pop(context);
+              controller.navigateToCalculator();
             },
           ),
           ListTile(
             title: const Text('Show trends'),
             onTap: () {
-              controller.navigateToCalculator();
               Navigator.pop(context);
+              controller.navigateToCalculator();
             },
           ),
         ],

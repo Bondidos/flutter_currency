@@ -12,7 +12,7 @@ import 'package:rxdart/rxdart.dart';
 class CurrencyRepoImpl extends GetxService implements CurrencyRepository {
   final CurrencyRemoteSource currencyRemoteSource;
   final CurrencySettings currencySettings;
-  final RatesDao ratesDao;
+  final RatesDatastore ratesDao;
 
   CurrencyRepoImpl({
     required this.currencyRemoteSource,
