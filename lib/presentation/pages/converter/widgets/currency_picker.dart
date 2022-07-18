@@ -36,23 +36,17 @@ class CurrencyPicker extends GetView<CalculatorLogic> {
           child: Obx(() {
             switch (mode) {
               case ExchangeMode.from:
-                {
-                  final currency = data.firstWhere((element) =>
-                      element.id == controller.fromCurrencyId.value);
-                  return buildChild(currency);
-                }
+                return buildChild(controller.fromCurrency.value);
               case ExchangeMode.to:
-                final currency = data.firstWhere(
-                    (element) => element.id == controller.toCurrencyId.value);
-                return buildChild(currency);
+                return buildChild(controller.toCurrency.value);
             }
           }),
           itemBuilder: (context) => List.generate(
             data.length,
             (index) => PopupMenuItem(
               onTap: mode == ExchangeMode.from
-                  ? () => controller.fromCurrency(data[index])
-                  : () => controller.toCurrency(data[index]),
+                  ? () => controller.setFromCurrency(data[index])
+                  : () => controller.setToCurrency(data[index]),
               child: MenuItemChild(
                 converterData: data[index],
               ),
@@ -63,7 +57,8 @@ class CurrencyPicker extends GetView<CalculatorLogic> {
     );
   }
 
-  Row buildChild(ConverterData converterData) {
+  Widget buildChild(ConverterData? converterData) {
+    if(converterData == null) return const SizedBox.shrink();
     return Row(
       children: [
         Flexible(flex: 4, child: MenuItemChild(converterData: converterData)),

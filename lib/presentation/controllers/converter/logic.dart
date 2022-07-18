@@ -1,59 +1,88 @@
-import 'package:flutter_currency/app/constants.dart';
+import 'dart:async';
+import 'package:flutter_currency/domain/entities/converter_settings.dart';
 import 'package:flutter_currency/domain/entities/currency.dart';
 import 'package:flutter_currency/domain/use_cases/fetch_converter_data.dart';
+import 'package:flutter_currency/domain/use_cases/save_converter_settings.dart';
+import 'package:flutter_currency/domain/use_cases/subscribe_converter_settings.dart';
+import 'package:flutter_currency/presentation/controllers/converter/calculation_result.dart';
 import 'package:get/get.dart';
 import 'package:flutter_currency/presentation/controllers/converter/state.dart';
 
-const defaultToCurrency = usd;
-const defaultFromCurrency = byn;
-const defaultAmount = 0;
+const defaultAmount = 1;
 
-class CalculatorLogic extends GetxController with StateMixin<CalculatorState> {
+class CalculatorLogic extends GetxController with StateMixin<ConverterState> {
   final FetchConverterData fetchConverterData;
+  final SaveConverterSettings saveSettings;
+  final SubscribeConverterSettings subscribeSettings;
 
   CalculatorLogic({
     required this.fetchConverterData,
+    required this.saveSettings,
+    required this.subscribeSettings,
   });
 
-  RxInt toCurrencyId = defaultToCurrency.obs;
-  RxInt fromCurrencyId = defaultFromCurrency.obs;
-  Rx<CalculatingResult?> exchangeResult = Rx<CalculatingResult?>(null);
+  final Rx<ConverterData?> fromCurrency = Rx<ConverterData?>(null);
+  final Rx<ConverterData?> toCurrency = Rx<ConverterData?>(null);
+  final RxInt _amountBuffer = RxInt(defaultAmount);
 
-  late ConverterData _exchangeFrom;
-  late ConverterData _exchangeTo; //todo initialize
+  Rx<CalculatingResult>? exchangeResult;
+  StreamSubscription<ConverterSettings>? settingsStream;
 
   @override
   void onInit() {
     _init();
+    debounce(
+      _amountBuffer,
+      time: const Duration(milliseconds: 500),
+          (callback) => exchangeResult?.value = _calculate(),
+    );
+
     super.onInit();
   }
 
   void _init() {
     change(null, status: RxStatus.loading());
     final List<ConverterData> data = fetchConverterData();
-    _exchangeFrom = data.firstWhere((element) => element.id == fromCurrencyId.value);
-    _exchangeTo = data.firstWhere((element) => element.id == toCurrencyId.value);
-    change(CalculatorState(data: data), status: RxStatus.success());
+    settingsStream = subscribeSettings().listen((settings) {
+      fromCurrency.value =
+          data.firstWhere((element) => element.id == settings.fromCurrencyId);
+      toCurrency.value =
+          data.firstWhere((element) => element.id == settings.toCurrencyId);
+    });
+    exchangeResult = Rx<CalculatingResult>(_calculate());
+    change(ConverterState(data: data), status: RxStatus.success());
   }
 
-  void fromCurrency(ConverterData from) {
-    _exchangeFrom = from;
-    fromCurrencyId.value = from.id;
+  void setFromCurrency(ConverterData from) {
+    // fromCurrency.value = from;
+    saveSettings(params: _createSettings(from: from.id,to: null));
   }
 
-  void toCurrency(ConverterData to) {
-    _exchangeTo = to;
-    toCurrencyId.value = to.id;
+  void setToCurrency(ConverterData to) {
+    // toCurrency.value = to;
+    saveSettings(params: _createSettings(to: to.id,from: null));
   }
 
   void onTextChange(String amount) {
-    final int fromAmount = amount.isEmpty ? 0 : int.parse(amount);
-    exchangeResult.value = CalculatingResult(
-        fromAmount: fromAmount,
-        fromAbr: _exchangeFrom.curAbbr,
-        toAmount:
-            (_exchangeTo.rateToByRub / _exchangeFrom.rateToByRub) * fromAmount,
-        toAbr: _exchangeTo.curAbbr);
+    final int intAmount = amount.isEmpty ? 1 : int.parse(amount);
+    _amountBuffer.value = intAmount;
+  }
+
+  ConverterSettings _createSettings({required int? from, required int? to}) => ConverterSettings(
+    fromCurrencyId: from ?? fromCurrency.value?.id ?? 0,
+    toCurrencyId: to ?? toCurrency.value?.id ?? 0,
+  );
+
+  CalculatingResult _calculate() {
+    double fromCurrencyRate = fromCurrency.value?.rateToByRub ?? 1;
+    double toCurrencyRate = toCurrency.value?.rateToByRub ?? 1;
+    var calculated = (toCurrencyRate / fromCurrencyRate) * _amountBuffer.value;
+
+    return CalculatingResult(
+      fromAmountAndAbr:
+      "${_amountBuffer.value} ${fromCurrency.value?.curAbbr} =",
+      toAmountAndAbr: "$calculated ${toCurrency.value?.curAbbr}",
+    );
   }
 
   @override
@@ -61,18 +90,4 @@ class CalculatorLogic extends GetxController with StateMixin<CalculatorState> {
     //todo save last currency to exchange
     super.onClose();
   }
-}
-
-class CalculatingResult {
-  final int fromAmount;
-  final String fromAbr;
-  final double toAmount;
-  final String toAbr;
-
-  const CalculatingResult({
-    required this.fromAmount,
-    required this.fromAbr,
-    required this.toAmount,
-    required this.toAbr,
-  });
 }

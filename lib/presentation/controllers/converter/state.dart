@@ -1,6 +1,9 @@
 import 'package:flutter_currency/domain/entities/currency.dart';
 
-class CalculatorState {
+class ConverterState {
   final List<ConverterData> data;
-  CalculatorState({required this.data});
+
+  ConverterState({
+    required this.data,
+  });
 }

@@ -18,8 +18,10 @@ class ExchangeResult extends GetView<CalculatorLogic> {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
-                Obx(() => Text('${controller.exchangeResult.value?.fromAmount} ${controller.exchangeResult.value?.fromAbr} =')),
-                Obx(() => Text('${controller.exchangeResult.value?.toAmount} ${controller.exchangeResult.value?.toAbr}')),
+                Obx(() =>
+                    Text('${controller.exchangeResult?.value.fromAmountAndAbr}')),
+                Obx(() => Text(
+                    '${controller.exchangeResult?.value.toAmountAndAbr}')),
               ],
             ),
           ),

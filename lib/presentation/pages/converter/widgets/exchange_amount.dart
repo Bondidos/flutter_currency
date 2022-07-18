@@ -14,6 +14,7 @@ class ExchangeAmount extends GetView<CalculatorLogic> {
       child: TextField(
         decoration: buildInputDecoration(),
         keyboardType: TextInputType.number,
+        maxLength: 12,
         onChanged: controller.onTextChange,
       ),
     );

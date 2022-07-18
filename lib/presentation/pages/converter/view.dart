@@ -42,7 +42,7 @@ class ConverterPage extends GetView<CalculatorLogic> {
     );
   }
 
-  Row buildCurrencyPickers(CalculatorState? state) {
+  Row buildCurrencyPickers(ConverterState? state) {
     return Row(
       children: [
         Flexible(
