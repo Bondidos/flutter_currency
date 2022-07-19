@@ -1,9 +1,11 @@
-class CalculatingResult {
+class CalculationResult {
   final String fromAmountAndAbr;
   final String toAmountAndAbr;
+  final String rate;
 
-  const CalculatingResult({
+  const CalculationResult({
     required this.fromAmountAndAbr,
     required this.toAmountAndAbr,
+    required this.rate,
   });
 }

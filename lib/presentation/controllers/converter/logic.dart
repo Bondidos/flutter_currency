@@ -23,71 +23,74 @@ class CalculatorLogic extends GetxController with StateMixin<ConverterState> {
 
   final Rx<ConverterData?> fromCurrency = Rx<ConverterData?>(null);
   final Rx<ConverterData?> toCurrency = Rx<ConverterData?>(null);
-  final RxInt _amountBuffer = RxInt(defaultAmount);
+  final RxInt amountBuffer = RxInt(defaultAmount);
 
-  Rx<CalculatingResult>? exchangeResult;
+  Rx<CalculationResult>? exchangeResult;
   StreamSubscription<ConverterSettings>? settingsStream;
 
   @override
   void onInit() {
     _init();
     debounce(
-      _amountBuffer,
+      amountBuffer,
       time: const Duration(milliseconds: 500),
-          (callback) => exchangeResult?.value = _calculate(),
+      (_) => _calculateAndEmitResult(),
     );
-
+    everAll([fromCurrency, toCurrency], (_) => _calculateAndEmitResult());
     super.onInit();
   }
 
   void _init() {
     change(null, status: RxStatus.loading());
     final List<ConverterData> data = fetchConverterData();
-    settingsStream = subscribeSettings().listen((settings) {
-      fromCurrency.value =
-          data.firstWhere((element) => element.id == settings.fromCurrencyId);
-      toCurrency.value =
-          data.firstWhere((element) => element.id == settings.toCurrencyId);
-    });
-    exchangeResult = Rx<CalculatingResult>(_calculate());
+    settingsStream = subscribeSettings()
+        .listen((settings) => _applySettings(data, settings));
+    exchangeResult = Rx<CalculationResult>(_calculate());
     change(ConverterState(data: data), status: RxStatus.success());
   }
 
-  void setFromCurrency(ConverterData from) {
-    // fromCurrency.value = from;
-    saveSettings(params: _createSettings(from: from.id,to: null));
+  void _applySettings(List<ConverterData> data, ConverterSettings settings) {
+    fromCurrency.value =
+        data.firstWhere((element) => element.id == settings.fromCurrencyId);
+    toCurrency.value =
+        data.firstWhere((element) => element.id == settings.toCurrencyId);
   }
 
-  void setToCurrency(ConverterData to) {
-    // toCurrency.value = to;
-    saveSettings(params: _createSettings(to: to.id,from: null));
-  }
+  void setFromCurrency(ConverterData from) =>
+      saveSettings(params: _createSettings(from: from.id, to: null));
+
+  void setToCurrency(ConverterData to) =>
+      saveSettings(params: _createSettings(to: to.id, from: null));
+
+  ConverterSettings _createSettings({required int? from, required int? to}) =>
+      ConverterSettings(
+        fromCurrencyId: from ?? fromCurrency.value?.id ?? 0,
+        toCurrencyId: to ?? toCurrency.value?.id ?? 0,
+      );
 
   void onTextChange(String amount) {
     final int intAmount = amount.isEmpty ? 1 : int.parse(amount);
-    _amountBuffer.value = intAmount;
+    amountBuffer.value = intAmount;
   }
 
-  ConverterSettings _createSettings({required int? from, required int? to}) => ConverterSettings(
-    fromCurrencyId: from ?? fromCurrency.value?.id ?? 0,
-    toCurrencyId: to ?? toCurrency.value?.id ?? 0,
-  );
+  void _calculateAndEmitResult() => exchangeResult?.value = _calculate();
 
-  CalculatingResult _calculate() {
+  CalculationResult _calculate() {
     double fromCurrencyRate = fromCurrency.value?.rateToByRub ?? 1;
     double toCurrencyRate = toCurrency.value?.rateToByRub ?? 1;
-    var calculated = (toCurrencyRate / fromCurrencyRate) * _amountBuffer.value;
+    var calculated = (fromCurrencyRate / toCurrencyRate) * amountBuffer.value;
 
-    return CalculatingResult(
+    return CalculationResult(
       fromAmountAndAbr:
-      "${_amountBuffer.value} ${fromCurrency.value?.curAbbr} =",
-      toAmountAndAbr: "$calculated ${toCurrency.value?.curAbbr}",
+          "${amountBuffer.value} ${fromCurrency.value?.curAbbr} =",
+      toAmountAndAbr: "${calculated.toPrecision(2)} ${toCurrency.value?.curAbbr}",
+      rate: (fromCurrencyRate / toCurrencyRate).toPrecision(2).toString(),
     );
   }
 
   @override
   void onClose() {
-    //todo save last currency to exchange
+    settingsStream?.cancel();
     super.onClose();
   }
 }

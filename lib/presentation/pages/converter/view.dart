@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_currency/presentation/app_drawer/view.dart';
 import 'package:flutter_currency/presentation/controllers/converter/logic.dart';
 import 'package:flutter_currency/presentation/controllers/converter/state.dart';
 import 'package:flutter_currency/presentation/pages/converter/widgets/exchange_amount.dart';
@@ -13,30 +12,34 @@ class ConverterPage extends GetView<CalculatorLogic> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(context),
-      drawer: const AppDrawer(),
-      body: controller.obx(
-        (state) {
-          return Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(
-              children: [
-                buildCurrencyPickers(state),
-                const ExchangeAmount(),
-                const ExchangeResult(),
-              ],
-            ),
-          );
-        },
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: buildAppBar(context),
+        body: controller.obx(
+          (state) {
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  children: [
+                    buildCurrencyPickers(state),
+                    const ExchangeAmount(),
+                    const ExchangeResult(),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: true,
-      title: const Center(child: Text("Calculate")),
+      automaticallyImplyLeading: false,
+      title: const Center(child: Text("Converter")),
       backgroundColor: Theme.of(context).colorScheme.primary,
       elevation: 0,
     );

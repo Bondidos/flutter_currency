@@ -15,6 +15,6 @@ class ConverterData {
         id: rate.curId,
         curAbbr: rate.curAbbr,
         rateToByRub:
-            rate.actualCurRate ?? rate.alternativeCurRate ?? 0 / rate.curScale,
+            (rate.actualCurRate ?? rate.alternativeCurRate ?? 0) / rate.curScale,
       );
 }

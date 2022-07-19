@@ -11,10 +11,12 @@ class ExchangeAmount extends GetView<CalculatorLogic> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: TextField(
+      child: TextFormField(
+        initialValue: controller.amountBuffer.value.toString(),
         decoration: buildInputDecoration(),
         keyboardType: TextInputType.number,
         maxLength: 12,
+        cursorColor: Colors.blueAccent,
         onChanged: controller.onTextChange,
       ),
     );
