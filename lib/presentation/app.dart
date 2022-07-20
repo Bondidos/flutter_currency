@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_currency/presentation/controllers/home/binding.dart';
+import 'package:flutter_currency/presentation/controllers/bottom_navigation/binding.dart';
 import 'package:flutter_currency/presentation/controllers/settings/binding.dart';
-import 'package:flutter_currency/presentation/pages/converter/view.dart';
-import 'package:flutter_currency/presentation/pages/home/view.dart';
+import 'package:flutter_currency/presentation/pages/bottom_navigation/view.dart';
 import 'package:flutter_currency/presentation/pages/settings/view.dart';
 import 'package:get/get.dart';
-
-import 'controllers/converter/binding.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -30,23 +27,18 @@ class App extends StatelessWidget {
           decorationColor: Colors.black,
         ),
       ),
-      initialRoute: HomePage.id,
+      initialRoute: '/',
       getPages: [
         GetPage(
-          name: HomePage.id,
-          page: () => const HomePage(),
-          binding: HomeBinding(),
+          name: '/',
+          page: () => const BottomNavigationPage(),
+          binding: BottomNavigationBinding(),
         ),
         GetPage(
           name: SettingsPage.id,
           page: () => const SettingsPage(),
           binding: SettingsBinding(),
         ),
-        GetPage(
-          name: ConverterPage.id,
-          page: () => const ConverterPage(),
-          binding: CalculatorBinding(),
-        )
       ],
     );
   }

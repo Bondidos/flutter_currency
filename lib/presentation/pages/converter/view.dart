@@ -6,44 +6,33 @@ import 'package:flutter_currency/presentation/pages/converter/widgets/currency_p
 import 'package:flutter_currency/presentation/pages/converter/widgets/result.dart';
 import 'package:get/get.dart';
 
-class ConverterPage extends GetView<CalculatorLogic> {
+class ConverterPage extends GetView<ConverterLogic> {
   const ConverterPage({Key? key}) : super(key: key);
-  static const id = '/converter';
+  static const id = 'Converter';
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: buildAppBar(context),
-        body: controller.obx(
-          (state) {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  children: [
-                    buildCurrencyPickers(state),
-                    const ExchangeAmount(),
-                    const ExchangeResult(),
-                  ],
-                ),
+      child: controller.obx(
+        (state) {
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                children: [
+                  buildCurrencyPickers(state),
+                  const ExchangeAmount(),
+                  const ExchangeResult(),
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  AppBar buildAppBar(BuildContext context) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      title: const Center(child: Text("Converter")),
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      elevation: 0,
-    );
-  }
 
   Row buildCurrencyPickers(ConverterState? state) {
     return Row(
@@ -66,5 +55,3 @@ class ConverterPage extends GetView<CalculatorLogic> {
     );
   }
 }
-
-

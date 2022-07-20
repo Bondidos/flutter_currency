@@ -10,12 +10,12 @@ import 'package:flutter_currency/presentation/controllers/converter/state.dart';
 
 const defaultAmount = 1;
 
-class CalculatorLogic extends GetxController with StateMixin<ConverterState> {
+class ConverterLogic extends GetxController with StateMixin<ConverterState> {
   final FetchConverterData fetchConverterData;
   final SaveConverterSettings saveSettings;
   final SubscribeConverterSettings subscribeSettings;
 
-  CalculatorLogic({
+  ConverterLogic({
     required this.fetchConverterData,
     required this.saveSettings,
     required this.subscribeSettings,

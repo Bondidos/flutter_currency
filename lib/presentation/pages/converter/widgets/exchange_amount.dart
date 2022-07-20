@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_currency/presentation/controllers/converter/logic.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 
-class ExchangeAmount extends GetView<CalculatorLogic> {
+class ExchangeAmount extends GetView<ConverterLogic> {
   const ExchangeAmount({
     Key? key,
   }) : super(key: key);

@@ -3,7 +3,7 @@ import 'package:flutter_currency/presentation/controllers/converter/calculation_
 import 'package:flutter_currency/presentation/controllers/converter/logic.dart';
 import 'package:get/get.dart';
 
-class ExchangeResult extends GetView<CalculatorLogic> {
+class ExchangeResult extends GetView<ConverterLogic> {
   const ExchangeResult({Key? key}) : super(key: key);
 
   @override

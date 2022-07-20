@@ -1,15 +1,15 @@
 import 'dart:async';
-
 import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 import 'package:flutter_currency/domain/use_cases/fetch_currency_rates_use_case.dart';
-import 'package:flutter_currency/presentation/controllers/home/state.dart';
+import 'package:flutter_currency/presentation/controllers/rates/state.dart';
 import 'package:flutter_currency/presentation/pages/settings/view.dart';
 import 'package:get/get.dart';
 
-class HomeLogic extends GetxController with StateMixin<HomeState> {
+
+class RatesLogic extends GetxController with StateMixin<HomeState> {
   final FetchCurrencyRates fetchRatesUseCase;
 
-  HomeLogic({
+  RatesLogic({
     required this.fetchRatesUseCase,
   });
 

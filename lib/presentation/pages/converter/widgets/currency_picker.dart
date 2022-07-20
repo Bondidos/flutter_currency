@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 enum ExchangeMode { from, to }
 
-class CurrencyPicker extends GetView<CalculatorLogic> {
+class CurrencyPicker extends GetView<ConverterLogic> {
   const CurrencyPicker({
     Key? key,
     required this.data,
