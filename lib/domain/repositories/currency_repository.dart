@@ -1,5 +1,5 @@
-import 'package:flutter_currency/domain/entities/rate.dart';
+import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 
 abstract class CurrencyRepository{
-  Future<List<Rate>> fetchRates();
+  Future<RatesOnDate> fetchRates();
 }

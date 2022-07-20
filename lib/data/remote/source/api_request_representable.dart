@@ -31,6 +31,4 @@ abstract class APIRequestRepresentable {
   Map<String, String>? get query;
 
   dynamic get body;
-
-  Future request();
 }
