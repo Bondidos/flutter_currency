@@ -1,5 +1,6 @@
 import 'package:flutter_currency/app/extensions/common.dart';
 import 'package:flutter_currency/data/models/currency_api.dart';
+import 'package:flutter_currency/data/models/currency_trend_api.dart';
 import 'package:flutter_currency/data/models/rate_api.dart';
 import 'package:flutter_currency/data/models/rate_model.dart';
 import 'package:flutter_currency/data/remote/remote_source_impl/extensions/currency_repo_ext.dart';
@@ -27,6 +28,8 @@ class CurrencyRemoteSourceImpl implements CurrencyRemoteSource {
       todayRates: todayResponse,
     );
   }
+
+//todo threads
 
   Future<List<RateApi>> _fetchAlternativeRates() async {
     final List<RateApi> tomorrowResponse =
@@ -63,4 +66,12 @@ class CurrencyRemoteSourceImpl implements CurrencyRemoteSource {
     List<CurrencyApi> info = await currencyService.fetchCurrencyInfo();
     return info.filterOld();
   }
+
+  @override
+  Future<List<CurrencyTrendApi>> fetchTrendsMonth(int id) =>
+      currencyService.fetchTrendsMonth(id);
+
+  @override
+  Future<List<CurrencyTrendApi>> fetchTrendsSixMonths(int id) =>
+      currencyService.fetchTrendsSixMonths(id);
 }

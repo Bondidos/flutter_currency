@@ -1,10 +1,12 @@
 import 'package:flutter_currency/app/extensions/common.dart';
 import 'package:flutter_currency/data/models/currency_api.dart';
+import 'package:flutter_currency/data/models/currency_trend_api.dart';
 import 'package:flutter_currency/data/models/rate_api.dart';
 import 'package:flutter_currency/data/remote/services/extensions/currency_service_ext.dart';
 import 'package:flutter_currency/data/remote/source/api_provider.dart';
 import 'package:flutter_currency/data/remote/source/apis/currency_api.dart';
-import 'package:flutter_currency/data/remote/source/apis/extensions/currency_info_api.dart';
+import 'package:flutter_currency/data/remote/source/apis/currency_info_api.dart';
+import 'package:flutter_currency/data/remote/source/apis/currency_trends_api.dart';
 import 'package:flutter_currency/data/sources/local/settings/date_settings.dart';
 import 'package:flutter_currency/data/sources/remote/services/currency_service.dart';
 
@@ -33,7 +35,6 @@ class CurrencyServiceImpl implements CurrencyService {
   Future<List<CurrencyApi>> fetchCurrencyInfo() =>
       _fetchInfo(request: CurrencyInfoApi());
 
-
   @override
   Future<List<RateApi>> fetchLastKnownRates() async {
     int days = 0;
@@ -60,5 +61,19 @@ class CurrencyServiceImpl implements CurrencyService {
       {required CurrencyInfoApi request}) async {
     List response = await apiProvider.request(request);
     return response.toCurrencyApi();
+  }
+
+  @override
+  Future<List<CurrencyTrendApi>> fetchTrendsMonth(int id) async {
+    final List<dynamic> list =
+        await apiProvider.request(TrendsApi.month(currencyId: id));
+    return list.map((e) => CurrencyTrendApi.fromJson(e)).toList();
+  }
+
+  @override
+  Future<List<CurrencyTrendApi>> fetchTrendsSixMonths(int id) async {
+    final List<dynamic> list =
+        await apiProvider.request(TrendsApi.sixMonths(currencyId: id));
+    return list.map((e) => CurrencyTrendApi.fromJson(e)).toList();
   }
 }

@@ -9,6 +9,7 @@ import 'package:flutter_currency/data/remote/source/api_provider.dart';
 import 'package:flutter_currency/data/repositories/converter_repo_impl.dart';
 import 'package:flutter_currency/data/repositories/currency_repo_impl.dart';
 import 'package:flutter_currency/data/repositories/currency_settings_repository_impl.dart';
+import 'package:flutter_currency/data/repositories/currency_trends_repository_impl.dart';
 import 'package:flutter_currency/data/sources/local/database/rates_dao.dart';
 import 'package:flutter_currency/data/sources/local/settings/converter_settings_store.dart';
 import 'package:flutter_currency/data/sources/local/settings/currency_settings.dart';
@@ -22,6 +23,7 @@ import 'package:flutter_currency/domain/entities/rates_on_date.dart';
 import 'package:flutter_currency/domain/repositories/converter_repository.dart';
 import 'package:flutter_currency/domain/repositories/currency_repository.dart';
 import 'package:flutter_currency/domain/repositories/currency_settings_repository.dart';
+import 'package:flutter_currency/domain/repositories/trends_repository.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -104,5 +106,8 @@ putServices() {
       ));
   Get.lazyPut<CurrencySettingsRepository>(() => CurrencySettingsRepositoryImpl(
         currencySettings: Get.find(),
+      ));
+  Get.lazyPut<CurrencyTrendsRepository>(() => CurrencyTrendsRepositoryImpl(
+        remoteSource: Get.find(),
       ));
 }
