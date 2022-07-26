@@ -1,6 +1,6 @@
 class CurrencyTrend {
   final int id;
-  final String date;
+  final DateTime date;
   final double rate;
 
   CurrencyTrend({

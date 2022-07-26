@@ -6,7 +6,7 @@ import 'package:flutter_currency/domain/use_cases/fetch_trends_six_months.dart';
 import 'package:flutter_currency/domain/use_cases/subscribe_trends.dart';
 import 'package:get/get.dart';
 
-class TrendsLogic extends GetxController{
+class TrendsLogic extends GetxController {
   final SubscribeTrends subscribeTrends;
   final FetchSixMonthsTrends fetchSixMonthsTrends;
   final FetchMonthTrends fetchMonthTrends;
@@ -17,15 +17,15 @@ class TrendsLogic extends GetxController{
     required this.fetchMonthTrends,
   });
 
-  var trendsLength = 0.obs;
+  RxList<CurrencyTrend> trends =
+      RxList<CurrencyTrend>(List.empty());
 
   StreamSubscription<List<CurrencyTrend>?>? subscription;
 
   @override
   void onInit() {
     subscription = subscribeTrends().listen((list) {
-      print(list?.length);
-      trendsLength.value = list?.length ?? 0;
+      if(list != null && list.isNotEmpty) trends.value = list;
     });
     fetchMonthTrends(params: 431);
     super.onInit();
@@ -36,5 +36,4 @@ class TrendsLogic extends GetxController{
     subscription?.cancel();
     super.onClose();
   }
-
 }

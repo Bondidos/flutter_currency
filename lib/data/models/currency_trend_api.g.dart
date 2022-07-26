@@ -9,13 +9,13 @@ part of 'currency_trend_api.dart';
 CurrencyTrendApi _$CurrencyTrendApiFromJson(Map<String, dynamic> json) =>
     CurrencyTrendApi(
       id: json['Cur_ID'] as int,
-      date: json['Date'] as String,
+      date: DateTime.parse(json['Date'] as String),
       rate: (json['Cur_OfficialRate'] as num).toDouble(),
     );
 
 Map<String, dynamic> _$CurrencyTrendApiToJson(CurrencyTrendApi instance) =>
     <String, dynamic>{
       'Cur_ID': instance.id,
-      'Date': instance.date,
+      'Date': instance.date.toIso8601String(),
       'Cur_OfficialRate': instance.rate,
     };

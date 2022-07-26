@@ -10,7 +10,7 @@ class CurrencyTrendApi extends CurrencyTrend {
   @JsonKey(name: 'Cur_ID')
   final int id;
   @JsonKey(name: 'Date')
-  final String date;
+  final DateTime date;
   @JsonKey(name: 'Cur_OfficialRate')
   final double rate;
 
