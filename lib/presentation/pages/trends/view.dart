@@ -113,15 +113,14 @@ class TrendsPainter extends CustomPainter {
       final rateInGrid =
           (size.width - padding * 2) * (element.rate - min) / (max - min);
       if (y == 0.0 && x == 0.0) {
-        y = size.height - rateInGrid;
+        y = size.height - padding - rateInGrid;
         path.moveTo(padding, y);
       } else {
         x += oneDayOnCanvas.toDouble();
         y -= rateInGrid;
         path.relativeLineTo(oneDayOnCanvas, y);
       }
-
-      final dodeY = size.height - rateInGrid;
+      final dodeY = size.height - padding - rateInGrid;
       final offset = Offset(x + padding, dodeY);
       _paintDot(canvas, offset);
       y = rateInGrid;
