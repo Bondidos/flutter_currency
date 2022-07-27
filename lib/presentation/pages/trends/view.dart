@@ -36,15 +36,8 @@ class MonthTrends extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: Get.width,
-      width: Get.width,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: CustomPaint(
-          painter: TrendsPainter(trends: trends),
-        ),
-      ),
+    return CustomPaint(
+      painter: TrendsPainter(trends: trends),
     );
   }
 }
@@ -56,7 +49,7 @@ class TrendsPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-
+    print('width: ${size.width} heigth: ${size.height}');
     final trendPaint = Paint()
       ..strokeWidth = 2
       ..color = Colors.blueAccent
@@ -64,48 +57,71 @@ class TrendsPainter extends CustomPainter {
 
     final trendBorder = Paint()
       ..strokeWidth = 1
-      ..color = Colors.red
+      ..color = Colors.blueGrey
       ..style = PaintingStyle.stroke;
 
-    final border = _paintBorders(size);
-    canvas.drawRect(border, trendBorder);
+    final border = _paintGrid(size);
+    canvas.drawPath(border, trendBorder);
 
-    final trendsPath = _paintTrends(size);
+    final trendsPath = _paintTrends(size, canvas);
     canvas.drawPath(trendsPath, trendPaint);
   }
 
-  Rect _paintBorders(Size size){
-    return Rect.fromLTWH(0.0, 0.0, size.width, size.height);
+  Path _paintGrid(Size size) {
+    final path = Path();
+    final border = Rect.fromLTWH(0.0, 0.0, size.width, size.height);
+    path.addRect(border);
+    final quarterOfPeriod = size.width / 4;
+    for (var i = 1; i < 4; i++) {
+      final period = quarterOfPeriod * i;
+      path.moveTo(period, 0.0);
+      path.relativeLineTo(0.0, size.height);
+
+      path.moveTo(0.0, period);
+      path.relativeLineTo(size.width, 0.0);
+    }
+      return path;
   }
 
-  Path _paintTrends(Size size) {
-    final oneDayOnCanvas = size.width / (trends.length -1);
+  Path _paintTrends(Size size, Canvas canvas) {
+    final oneDayOnCanvas = size.width / (trends.length - 1);
     var max = 0.0;
     var min = double.infinity;
     for (var element in trends) {
-      if(element.rate > max) max = element.rate.ceil().toDouble();
-      if(element.rate < min) min = element.rate.toInt().toDouble();
+      if (element.rate > max) max = element.rate.ceil().toDouble();
+      if (element.rate < min) min = element.rate.toInt().toDouble();
     }
-    print(min);
 
     final path = Path();
     var y = 0.0;
     var x = 0.0;
-    final rateOnCanvas = size.height / (max + max);
-    print(rateOnCanvas);
 
-    for(var element in trends){
-      if(y == 0.0 && x == 0.0) {
-        y = size.height - rateOnCanvas * element.rate;
+    for (var element in trends) {
+      final rateInGrid = size.height * (element.rate - min)/(max - min);
+      if (y == 0.0 && x == 0.0) {
+        y= size.height - rateInGrid;
         path.moveTo(x, y);
       } else {
-        x = oneDayOnCanvas.toDouble();
-        y -= (rateOnCanvas * element.rate);
-        path.relativeLineTo(x, y);
+        x += oneDayOnCanvas.toDouble();
+        y -= rateInGrid;
+        path.relativeLineTo(oneDayOnCanvas, y);
       }
-      y = (rateOnCanvas * element.rate);
+
+      final dodeY = size.height - rateInGrid;
+      final offset = Offset(x, dodeY);
+      _paintDot(canvas,offset);
+      y = rateInGrid;
     }
     return path;
+  }
+
+  _paintDot(Canvas canvas, Offset offset){
+    const dotRadius = 2.5;
+    final dodPaint = Paint()
+      ..strokeWidth = 1
+      ..color = Colors.red
+      ..style = PaintingStyle.fill;
+    canvas.drawCircle(offset, dotRadius, dodPaint);
   }
 
   @override
