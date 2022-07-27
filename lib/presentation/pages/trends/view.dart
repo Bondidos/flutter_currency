@@ -16,8 +16,8 @@ class TrendsPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: GetBuilder<TrendsLogic>(builder: (logic) {
-            return CustomPaint(
-              painter: TrendsPainter(trends: logic.trends),
+            return MonthTrends(
+              trends: logic.trends,
             );
           }),
         ),
@@ -38,6 +38,17 @@ class MonthTrends extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: TrendsPainter(trends: trends),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text('1'),
+          Text('1'),
+          Text('1'),
+          Text('1'),
+          Text('1'),
+        ],
+      ),
     );
   }
 }
@@ -49,7 +60,8 @@ class TrendsPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    print('width: ${size.width} heigth: ${size.height}');
+    const padding = 10.0;
+
     final trendPaint = Paint()
       ..strokeWidth = 2
       ..color = Colors.blueAccent
@@ -60,31 +72,32 @@ class TrendsPainter extends CustomPainter {
       ..color = Colors.blueGrey
       ..style = PaintingStyle.stroke;
 
-    final border = _paintGrid(size);
+    final border = _paintGrid(size, padding);
     canvas.drawPath(border, trendBorder);
 
-    final trendsPath = _paintTrends(size, canvas);
+    final trendsPath = _paintTrends(size, canvas, padding);
     canvas.drawPath(trendsPath, trendPaint);
   }
 
-  Path _paintGrid(Size size) {
+  Path _paintGrid(Size size, double padding) {
     final path = Path();
-    final border = Rect.fromLTWH(0.0, 0.0, size.width, size.height);
+    final border = Rect.fromLTWH(
+        padding, padding, size.width - padding * 2, size.height - padding * 2);
     path.addRect(border);
-    final quarterOfPeriod = size.width / 4;
+    final quarterOfPeriod = border.height / 4;
     for (var i = 1; i < 4; i++) {
       final period = quarterOfPeriod * i;
-      path.moveTo(period, 0.0);
-      path.relativeLineTo(0.0, size.height);
+      path.moveTo(border.left + period, padding);
+      path.relativeLineTo(0.0, border.height);
 
-      path.moveTo(0.0, period);
-      path.relativeLineTo(size.width, 0.0);
+      path.moveTo(padding, border.top + period);
+      path.relativeLineTo(border.width, 0.0);
     }
-      return path;
+    return path;
   }
 
-  Path _paintTrends(Size size, Canvas canvas) {
-    final oneDayOnCanvas = size.width / (trends.length - 1);
+  Path _paintTrends(Size size, Canvas canvas, double padding) {
+    final oneDayOnCanvas = (size.width - padding * 2) / (trends.length - 1);
     var max = 0.0;
     var min = double.infinity;
     for (var element in trends) {
@@ -97,10 +110,11 @@ class TrendsPainter extends CustomPainter {
     var x = 0.0;
 
     for (var element in trends) {
-      final rateInGrid = size.height * (element.rate - min)/(max - min);
+      final rateInGrid =
+          (size.width - padding * 2) * (element.rate - min) / (max - min);
       if (y == 0.0 && x == 0.0) {
-        y= size.height - rateInGrid;
-        path.moveTo(x, y);
+        y = size.height - rateInGrid;
+        path.moveTo(padding, y);
       } else {
         x += oneDayOnCanvas.toDouble();
         y -= rateInGrid;
@@ -108,14 +122,14 @@ class TrendsPainter extends CustomPainter {
       }
 
       final dodeY = size.height - rateInGrid;
-      final offset = Offset(x, dodeY);
-      _paintDot(canvas,offset);
+      final offset = Offset(x + padding, dodeY);
+      _paintDot(canvas, offset);
       y = rateInGrid;
     }
     return path;
   }
 
-  _paintDot(Canvas canvas, Offset offset){
+  _paintDot(Canvas canvas, Offset offset) {
     const dotRadius = 2.5;
     final dodPaint = Paint()
       ..strokeWidth = 1
