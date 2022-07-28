@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_currency/domain/entities/currency_trend.dart';
 import 'package:flutter_currency/presentation/controllers/trends/logic.dart';
+import 'package:flutter_currency/presentation/controllers/trends/state.dart';
 import 'package:get/get.dart';
 
-class TrendsPage extends StatelessWidget {
+class TrendsPage extends GetView<TrendsLogic> {
   const TrendsPage({Key? key}) : super(key: key);
   static const id = 'Trends';
 
@@ -16,9 +17,10 @@ class TrendsPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: GetBuilder<TrendsLogic>(builder: (logic) {
-            return MonthTrends(
-              trends: logic.trends,
-            );
+            return controller.obx((state) {
+              if (state == null) return const SizedBox.shrink();
+              return MonthTrends(state: state);
+            });
           }),
         ),
       ),
@@ -27,26 +29,32 @@ class TrendsPage extends StatelessWidget {
 }
 
 class MonthTrends extends StatelessWidget {
+  final TrendsState state;
+
   const MonthTrends({
     Key? key,
-    required this.trends,
+    required this.state,
   }) : super(key: key);
-
-  final List<CurrencyTrend> trends;
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: TrendsPainter(trends: trends),
+      painter: TrendsPainter(state: state),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('1'),
-          Text('1'),
-          Text('1'),
-          Text('1'),
-          Text('1'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: state.dateGrid.map((e) => Text(e)).toList(),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: state.rateGrid.map((e) => Text(e.toString())).toList(),
+            ),
+          ),
         ],
       ),
     );
@@ -54,13 +62,13 @@ class MonthTrends extends StatelessWidget {
 }
 
 class TrendsPainter extends CustomPainter {
-  final List<CurrencyTrend> trends;
+  final TrendsState state;
 
-  TrendsPainter({required this.trends});
+  TrendsPainter({required this.state});
 
   @override
   void paint(Canvas canvas, Size size) {
-    const padding = 10.0;
+    const padding = 20.0;
 
     final trendPaint = Paint()
       ..strokeWidth = 2
@@ -97,13 +105,10 @@ class TrendsPainter extends CustomPainter {
   }
 
   Path _paintTrends(Size size, Canvas canvas, double padding) {
+    final List<CurrencyTrend> trends = state.trends;
+    final double max = state.maxRate;
+    final double min = state.minRate;
     final oneDayOnCanvas = (size.width - padding * 2) / (trends.length - 1);
-    var max = 0.0;
-    var min = double.infinity;
-    for (var element in trends) {
-      if (element.rate > max) max = element.rate.ceil().toDouble();
-      if (element.rate < min) min = element.rate.toInt().toDouble();
-    }
 
     final path = Path();
     var y = 0.0;
