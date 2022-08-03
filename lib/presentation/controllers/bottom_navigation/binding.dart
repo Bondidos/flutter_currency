@@ -1,13 +1,9 @@
 import 'package:flutter_currency/domain/use_cases/fetch_converter_data.dart';
 import 'package:flutter_currency/domain/use_cases/fetch_currency_rates_use_case.dart';
-import 'package:flutter_currency/domain/use_cases/fetch_trends_month.dart';
-import 'package:flutter_currency/domain/use_cases/fetch_trends_six_months.dart';
 import 'package:flutter_currency/domain/use_cases/save_converter_settings.dart';
 import 'package:flutter_currency/domain/use_cases/subscribe_converter_settings.dart';
-import 'package:flutter_currency/domain/use_cases/subscribe_trends.dart';
 import 'package:flutter_currency/presentation/controllers/converter/logic.dart';
 import 'package:flutter_currency/presentation/controllers/rates/logic.dart';
-import 'package:flutter_currency/presentation/controllers/trends/logic.dart';
 import 'package:get/get.dart';
 
 import 'logic.dart';
@@ -18,7 +14,6 @@ class BottomNavigationBinding extends Bindings {
     _bottomNavPageDependencies();
     _homeDependencies();
     _converterDependencies();
-    _trendsDependencies();
   }
 
   void _bottomNavPageDependencies() {
@@ -38,17 +33,6 @@ class BottomNavigationBinding extends Bindings {
           fetchConverterData: Get.find(),
           saveSettings: Get.find(),
           subscribeSettings: Get.find(),
-        ));
-  }
-
-  void _trendsDependencies() {
-    Get.lazyPut(() => SubscribeTrends(Get.find()));
-    Get.lazyPut(() => FetchSixMonthsTrends(repository: Get.find()));
-    Get.lazyPut(() => FetchMonthTrends(repository: Get.find()));
-    Get.lazyPut(() => TrendsLogic(
-          subscribeTrends: Get.find(),
-          fetchSixMonthsTrends: Get.find(),
-          fetchMonthTrends: Get.find(),
         ));
   }
 }

@@ -17,18 +17,16 @@ class TrendsLogic extends GetxController with StateMixin<TrendsState> {
     required this.fetchMonthTrends,
   });
 
-  // RxList<CurrencyTrend> trends = RxList<CurrencyTrend>(List.empty());
-
   StreamSubscription<List<CurrencyTrend>?>? subscription;
 
   @override
   void onInit() {
+    change(null,status: RxStatus.loading());
     subscription = subscribeTrends().listen((trends) {
       if (trends == null || trends.isEmpty) return;
-      // trends.value = list;
       _setState(trends);
     });
-    fetchMonthTrends(params: 431);
+    fetchMonthTrends();
     super.onInit();
   }
 

@@ -20,16 +20,11 @@ const _navItems = [
     label: ConverterPage.id,
     icon: Icon(Icons.currency_exchange),
   ),
-  BottomNavigationBarItem(
-    label: TrendsPage.id,
-    icon: Icon(Icons.trending_up),
-  ),
 ];
 
 const _labels = [
   RatesPage.id,
   ConverterPage.id,
-  TrendsPage.id,
 ];
 
 class BottomNavigationPage extends GetView<BottomNavigationLogic> {

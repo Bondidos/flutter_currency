@@ -109,5 +109,6 @@ putServices() {
       ));
   Get.lazyPut<CurrencyTrendsRepository>(() => CurrencyTrendsRepositoryImpl(
         remoteSource: Get.find(),
+        settingsStore: Get.find(),
       ));
 }

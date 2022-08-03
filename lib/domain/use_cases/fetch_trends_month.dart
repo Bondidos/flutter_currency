@@ -6,5 +6,5 @@ class FetchMonthTrends extends UseCase<CurrencyTrendsRepository, int> {
       : super(repository);
 
   @override
-  void call({int params = 0}) => repository.monthPeriod(params);
+  void call({int? params}) => repository.monthPeriod();
 }

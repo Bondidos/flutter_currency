@@ -4,11 +4,12 @@ import 'package:flutter_currency/presentation/controllers/converter/state.dart';
 import 'package:flutter_currency/presentation/pages/converter/widgets/exchange_amount.dart';
 import 'package:flutter_currency/presentation/pages/converter/widgets/currency_picker.dart';
 import 'package:flutter_currency/presentation/pages/converter/widgets/result.dart';
+import 'package:flutter_currency/presentation/pages/trends/view.dart';
 import 'package:get/get.dart';
 
 class ConverterPage extends GetView<ConverterLogic> {
   const ConverterPage({Key? key}) : super(key: key);
-  static const id = 'Converter';
+  static const id = 'converter';
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +25,13 @@ class ConverterPage extends GetView<ConverterLogic> {
                   buildCurrencyPickers(state),
                   const ExchangeAmount(),
                   const ExchangeResult(),
+                  TextButton(
+                    child: const Text(
+                      'Show trends',
+                      style: TextStyle(color: Colors.blueAccent,fontSize: 20),
+                    ),
+                    onPressed: () => Get.toNamed(TrendsPage.id),
+                  )
                 ],
               ),
             ),
@@ -32,7 +40,6 @@ class ConverterPage extends GetView<ConverterLogic> {
       ),
     );
   }
-
 
   Row buildCurrencyPickers(ConverterState? state) {
     return Row(
