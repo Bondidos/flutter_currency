@@ -30,7 +30,7 @@ jobs:
         with:
           api-level: ${{ matrix.api-level }}
           target: playstore
-          emulator-options: -dns-server 8.8.8.8
+          emulator-options: -dns-server 8.8.8.8 -timezone Europe/Amsterdam
           arch: x86_64
           profile: Nexus 6
           script: flutter test integration_test
