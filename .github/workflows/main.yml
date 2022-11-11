@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - develop
+
+
 jobs:
   commit_develop:
     name: commit to develop
@@ -15,22 +17,27 @@ jobs:
       fail-fast: true
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.0.5'
-          channel: 'stable'
-      - name: App Pub Get
-        run: flutter pub get
-      - name: Test
-        uses: reactivecircus/android-emulator-runner@v2.27.0
-        with:
-          api-level: ${{ matrix.api-level }}
-          target: playstore
-          emulator-options: -dns-server 8.8.8.8 -timezone Europe/Amsterdam
-          arch: x86_64
-          profile: Nexus 6
-          script: flutter test integration_test
+      env:
+        DNS:
+        run: |
+          scutil --dns | sed -n '/nameserver/ { s/^.* : \(.*\)/\1/p; }' | sort -u | paste -s -d',' -
+      - run: echo $DNS
+#      - uses: actions/setup-java@v3
+#        with:
+#          distribution: 'temurin'
+#          java-version: '11'
+#      - uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.0.5'
+#          channel: 'stable'
+#      - name: App Pub Get
+#        run: flutter pub get
+#      - name: Test
+#        uses: reactivecircus/android-emulator-runner@v2.27.0
+#        with:
+#          api-level: ${{ matrix.api-level }}
+#          target: playstore
+#          emulator-options: -dns-server 8.8.8.8 -timezone Europe/Amsterdam
+#          arch: x86_64
+#          profile: Nexus 6
+#          script: flutter test integration_test
