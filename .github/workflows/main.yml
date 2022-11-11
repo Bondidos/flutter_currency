@@ -1,4 +1,4 @@
-me: on_master_commit
+name: on_master_commit
 
 on:
   push:
