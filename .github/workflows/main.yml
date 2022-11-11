@@ -16,12 +16,12 @@ jobs:
           - 29
       fail-fast: true
     steps:
-      - uses: actions/checkout@v3
-        env:
-          DNS:
-          run: |
+#      - uses: actions/checkout@v3
+      env:
+        DNS:
+        run: |
             scutil --dns | sed -n '/nameserver/ { s/^.* : \(.*\)/\1/p; }' | sort -u | paste -s -d',' -
-        - run: echo $DNS
+      - run: echo $DNS
 #      - uses: actions/setup-java@v3
 #        with:
 #          distribution: 'temurin'
