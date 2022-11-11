@@ -13,7 +13,8 @@ jobs:
     strategy:
       matrix:
         api-level:
-          - scutil --dns | sed -n '/nameserver/ { s/^.* : \(.*\)/\1/p; }' | sort -u | paste -s -d',' -
+          - run:|
+              scutil --dns | sed -n '/nameserver/ { s/^.* : \(.*\)/\1/p; }' | sort -u | paste -s -d',' -
       fail-fast: true
     steps:
       - uses: actions/checkout@v3
