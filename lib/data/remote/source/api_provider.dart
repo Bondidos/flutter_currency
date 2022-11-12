@@ -21,6 +21,8 @@ class APIProvider {
         body: request.body,
       );
       logger.d(response.statusCode);
+      logger.d(response.headers);
+      logger.d(response.body);
       return _returnResponse(response);
     } on TimeoutException catch (e) {
       logger.d(e.message);
