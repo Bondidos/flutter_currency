@@ -13,12 +13,12 @@ jobs:
     strategy:
       matrix:
         api-level:
-          - run:|
-              scutil --dns | sed -n '/nameserver/ { s/^.* : \(.*\)/\1/p; }' | sort -u | paste -s -d',' -
+          - 29
       fail-fast: true
     steps:
-      - uses: actions/checkout@v3
-      - run: echo ${{ matrix.api-level }}
+      - run: |
+          scutil --dns | sed -n '/nameserver/ { s/^.* : \(.*\)/\1/p; }' | sort -u | paste -s -d',' -
+#      - uses: actions/checkout@v3
 #      - uses: actions/setup-java@v3
 #        with:
 #          distribution: 'temurin'
