@@ -33,9 +33,8 @@ jobs:
         with:
           api-level: ${{ matrix.api-level }}
           target: playstore
-          disable-animations: true
           emulator-options: |
-            -dns-server 1.1.1.1 -dns-server 8.8.8.8 -timezone Europe/Amsterdam
+            -no-boot-anim -dns-server 1.1.1.1 -dns-server 8.8.8.8 -timezone Europe/Amsterdam
           arch: x86_64
           profile: Nexus 6
           disk-size: 2048
