@@ -34,7 +34,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: playstore
           emulator-options: |
-            -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -dns-server 8.8.8.8, 1.1.1.1
+            -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -dns-server 8.8.8.8
           arch: x86_64
           profile: Nexus 6
           disk-size: 2048
