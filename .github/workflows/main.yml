@@ -5,7 +5,6 @@ on:
     branches:
       - develop
 
-
 jobs:
   commit_develop:
     name: commit to develop
