@@ -32,10 +32,10 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2.27.0
         with:
           api-level: ${{ matrix.api-level }}
-          target: google_apis
+          target: playstore
           emulator-options: |
-            -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -dns-server 8.8.8.8
+            -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -dns-server “2001:4860:4860::8844,2001:4860:4860::8888,8.8.8.8,8.8.4.4”
           arch: x86_64
-          profile: Pixel 3
+          profile: Nexus 6
           disk-size: 2048
           script: flutter test integration_test
