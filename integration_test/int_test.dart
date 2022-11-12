@@ -9,7 +9,7 @@ void main() {
     group('Emulator_Test', () {
       testWidgets('Test', (widgetTester) async {
         app.main();
-        await widgetTester.pumpAndSettle(const Duration(seconds: 1));
+        await widgetTester.pumpAndSettle(const Duration(seconds: 3));
         final newGameBtn = find.text('USD');
         expect(newGameBtn, findsOneWidget);
       });
