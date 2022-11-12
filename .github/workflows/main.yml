@@ -8,11 +8,11 @@ on:
 jobs:
   commit_develop:
     name: commit to develop
-    runs-on: macos-11
+    runs-on: macos-latest
     strategy:
       matrix:
         api-level:
-          - 29
+          - 28
       fail-fast: true
     steps:
       - run: |
@@ -35,7 +35,7 @@ jobs:
           target: playstore
           emulator-options: |
             -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -dns-server 8.8.8.8, 1.1.1.1
-          arch: arm64-v8a
+          arch: x86_64
           profile: Nexus 6
           disk-size: 2048
           script: flutter test integration_test
