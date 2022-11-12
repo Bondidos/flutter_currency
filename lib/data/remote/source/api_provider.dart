@@ -22,7 +22,8 @@ class APIProvider {
       );
       logger.d(response.statusCode);
       return _returnResponse(response);
-    } on TimeoutException catch (_) {
+    } on TimeoutException catch (e) {
+      logger.d(e.message);
       throw TimeOutException(null);
     } on SocketException {
       throw FetchDataException('No Internet connection');
