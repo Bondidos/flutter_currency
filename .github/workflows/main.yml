@@ -34,6 +34,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: playstore
           emulator-options: |
+            -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
             -dns-server 1.1.1.1 -timezone Europe/Amsterdam
             -dns-server 8.8.8.8 -timezone Europe/Amsterdam
           arch: x86_64
